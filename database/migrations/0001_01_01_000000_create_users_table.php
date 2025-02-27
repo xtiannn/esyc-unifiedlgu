@@ -14,10 +14,24 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('email', 191)->unique();
+            $table->string('password')->nullable();
+            $table->enum('role', ['User', 'Admin'])->default('User');
+            $table->string('reset_token')->nullable();
+            $table->dateTime('reset_expires')->nullable();
+            $table->string('contact_number', 20)->nullable();
+            $table->text('address')->nullable();
+            $table->date('birth_date')->nullable();
+            $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
+            $table->enum('civil_status', ['Single', 'Married', 'Widowed', 'Separated', 'Divorced'])->nullable();
+            $table->string('occupation')->nullable();
+            $table->string('household_number', 50)->nullable();
+            $table->string('barangay_id', 50)->nullable();
+            $table->boolean('is_resident')->default(true);
+            $table->enum('scholarship_status', ['not_applied', 'applied', 'interview_scheduled', 'approved', 'rejected'])->default('not_applied');
+            $table->dateTime('application_date')->nullable();
+            $table->string('document_path')->nullable();
+            $table->string('profile_picture')->nullable();
             $table->timestamps();
         });
 
