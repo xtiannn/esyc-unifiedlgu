@@ -15,6 +15,11 @@ class EmergencyController extends Controller
     {
         return view('emergency.index');
     }
+    public function incidents()
+    {
+        return view('emergency.incidents');
+
+    }
 
     /**
      * Show the form for creating a new resource.

@@ -1,13 +1,11 @@
 <x-app-layout>
     <div class="row">
         <div class="col-md-10">
-            <h1>User Management</h1>
+            <h1>Emergency Alerts</h1>
         </div>
         <div class="col-md-2">
-            <button type="button" role="button" class="btn btn-success mt-2" data-bs-toggle="modal"
-                data-bs-target="#addUserModal">
-                <i class="fa fa-user-plus mr-2"></i>
-                Add User
+            <button type="button" class="btn btn-warning mt-2" data-bs-toggle="modal" data-bs-target="#sendAlertModal">
+                <i class="fa fa-bell mr-2"></i> Send Alert
             </button>
         </div>
     </div>
@@ -24,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($users as $user)
+                {{-- @foreach ($users as $user)
                     <tr>
                         <td data-label="#">{{ $loop->iteration }}.</td>
                         <td data-label="Name">{{ $user->name }}</td>
@@ -51,31 +49,13 @@
                             </form>
                         </td>
                     </tr>
-                @endforeach
+                @endforeach --}}
             </tbody>
         </table>
     </div>
 
-    <!-- Reusable Pagination -->
-    <nav aria-label="Table pagination" class="pagination-custom">
-        <ul class="pagination">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo; Prev</span>
-                </a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">Next &raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
 
-    @include('users.modals.addUser');
+    {{-- @include('users.modals.addUser'); --}}
 
 
 

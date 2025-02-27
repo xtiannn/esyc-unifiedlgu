@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
+use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -29,8 +32,30 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            // Validate request
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|max:255',
+                'role' => 'required|string', // Removed Rule::in
+            ]);
+
+            // Create new user with hashed password
+            User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'role' => $validated['role'], // Ensure the value matches ENUM options
+                'password' => Hash::make($validated['password']),
+            ]);
+
+            return redirect()->route('users.index')->with('success', 'User created successfully!');
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()]);
+        }
     }
+
+
 
     /**
      * Display the specified resource.
@@ -53,7 +78,25 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        try {
+            // Validate request
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+                'role' => ['required', Rule::in(['Admin', 'User'])],
+            ]);
+
+            // Update user
+            $user->update([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'role' => $validated['role'],
+            ]);
+
+            return to_route('users.index');
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -61,6 +104,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        try {
+            $user->delete();
+            return redirect()->route('users.index')->with('success', 'User deleted successfully!');
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => 'Failed to delete user: ' . $e->getMessage()]);
+        }
     }
 }
