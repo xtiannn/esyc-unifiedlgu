@@ -31,7 +31,8 @@
          </p>
          <ul class="navbar-nav flex-fill w-100 mb-2">
 
-             <ul class="navbar-nav flex-fill w-100 mb-2">
+             <ul
+                 class="navbar-nav flex-fill w-100 mb-2 {{ Route::currentRouteName() === 'emergency.index' ? 'active' : '' }}">
                  <li class="nav-item w-100">
                      <a class="nav-link" href="{{ route('emergency.index') }}">
                          <i class="fa-solid fa-wrench"></i>

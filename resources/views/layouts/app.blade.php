@@ -96,7 +96,7 @@
 </div>
 
 
-<body class="vertical  light">
+<body class="vertical light">
     <div class="wrapper">
         <!-- Navigation Bar -->
         @include('partials.navbar')

@@ -9,14 +9,12 @@
 
      <ul class="nav">
 
-
          <li class="nav-item">
              <section class="nav-link text-muted my-2 circle-icon" href="#" data-toggle="modal"
                  data-target=".modal-shortcut">
                  <span class="fe fe-message-circle fe-16"></span>
              </section>
          </li>
-
 
          <li class="nav-item nav-notif">
              <section class="nav-link text-muted my-2 circle-icon" href="#" data-toggle="modal"
@@ -25,17 +23,18 @@
 
                  <span id="notification-count"
                      style="
-                                    position: absolute;
-                                    top: 12px; right: 5px;
-                                    font-size:13px; color: white;
-                                    background-color: red;
-                                    width:8px;
-                                    height: 8px;
-                                    display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-                                    border-radius: 50px;
-                                  ">
+                            position: absolute;
+                            top: 12px; right: 5px;
+                            font-size:13px; color: white;
+                            background-color: red;
+                            width:8px;
+                            height: 8px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            border-radius: 50px;
+                            ">
+                 </span>
              </section>
          </li>
 
@@ -44,7 +43,6 @@
                  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                  <span class="avatar avatar-sm mt-2">
                      <div class="avatar-img rounded-circle avatar-initials-min text-center position-relative">
-
 
                      </div>
                  </span>
