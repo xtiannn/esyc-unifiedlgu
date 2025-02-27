@@ -100,14 +100,14 @@
              </ul>
 
              <p class="text-muted-nav nav-heading mt-4 mb-1">
-                 <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">OTHER
-                     COMPONENTS</span>
+                 <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">
+                     USER MANAGEMENT</span>
              </p>
              <ul class="navbar-nav flex-fill w-100 mb-2">
                  <li class="nav-item w-100">
-                     <a class="nav-link" href="#">
-                         <i class="fa-solid fa-wrench"></i>
-                         <span class="ml-3 item-text">Module 6</span>
+                     <a class="nav-link" href="{{ route('users.index') }}">
+                         <i class="fa-solid fa-users"></i>
+                         <span class="ml-3 item-text">Users</span>
                      </a>
                  </li>
              </ul>
@@ -115,8 +115,8 @@
              <ul class="navbar-nav flex-fill w-100 mb-2">
                  <li class="nav-item w-100">
                      <a class="nav-link" href="#">
-                         <i class="fa-solid fa-wrench"></i>
-                         <span class="ml-3 item-text">Module 7</span>
+                        <i class="fas fa-history"></i>
+                         <span class="ml-3 item-text">Audit Trail</span>
                      </a>
                  </li>
              </ul>
