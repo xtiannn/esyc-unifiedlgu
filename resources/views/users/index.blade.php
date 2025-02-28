@@ -32,13 +32,9 @@
                         <td data-label="Role">{{ $user->role }}</td>
                         <td data-label="DateCreated">{{ $user->created_at->format('F j, Y g:i A') }}</td>
                         <td data-label="Action">
-                            <button class="btn btn-primary btn-sm editUserBtn"
-                                data-id="{{ $user->id }}"
-                                data-name="{{ $user->name }}"
-                                data-email="{{ $user->email }}"
-                                data-role="{{ $user->role }}"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editUserModal">
+                            <button class="btn btn-primary btn-sm editUserBtn" data-id="{{ $user->id }}"
+                                data-name="{{ $user->name }}" data-email="{{ $user->email }}"
+                                data-role="{{ $user->role }}" data-bs-toggle="modal" data-bs-target="#editUserModal">
                                 <i class="fa fa-edit"></i>
                             </button>
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
