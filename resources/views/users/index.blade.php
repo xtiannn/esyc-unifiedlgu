@@ -1,5 +1,16 @@
 <x-app-layout>
-    <h1>User Management</h1>
+    <div class="row">
+        <div class="col-md-10">
+            <h1>User Management</h1>
+        </div>
+        <div class="col-md-2">
+            <button type="button" role="button" class="btn btn-success mt-2" data-bs-toggle="modal"
+                data-bs-target="#addUserModal">
+                <i class="fa fa-user-plus mr-2"></i>
+                Add User
+            </button>
+        </div>
+    </div>
     <div class="table-responsive">
         <table class="table table-custom">
             <thead>
@@ -30,12 +41,11 @@
                                 data-bs-target="#editUserModal">
                                 <i class="fa fa-edit"></i>
                             </button>
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST"
-                                class="d-inline">
+                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Are you sure?')">
+                                    onclick="return confirm('Your are about to delete user')">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </form>
@@ -64,4 +74,9 @@
             </li>
         </ul>
     </nav>
+
+    @include('users.modals.addUser');
+
+
+
 </x-app-layout>

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email', 191)->unique();
             $table->string('password')->nullable();
-            $table->enum('role', ['User', 'Admin'])->default('User');
+            $table->enum('role', ['User', 'Admin']);
             $table->string('reset_token')->nullable();
             $table->dateTime('reset_expires')->nullable();
             $table->string('contact_number', 20)->nullable();
