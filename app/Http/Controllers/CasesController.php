@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Helpers\AuditHelper;
 use App\Models\Cases;
-use Auth;
 use Exception;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Flasher\Prime\FlasherInterface;
 
 class CasesController extends Controller
 {
@@ -26,7 +28,7 @@ class CasesController extends Controller
      */
     public function create()
     {
-            return view('cases.create');
+        return view('cases.create');
     }
 
     /**
@@ -39,11 +41,10 @@ class CasesController extends Controller
             $validated = $request->validate([
                 'case_title' => 'required|string|max:255',
                 'case_type' => 'required|string',
-                'guardian_name' => 'required|string|min:1|max:255',
-                'guardian_contact' => 'required|string|min:1|max:11',
-                'notes' => 'nullable|string|min:1|max:255',
+                'guardian_name' => 'required|string|max:255',
+                'guardian_contact' => 'required|string|max:255',
+                'notes' => 'nullable|string|max:255',
             ]);
-
             $case = Cases::create([
                 'case_title' => $validated['case_title'],
                 'case_type' => $validated['case_type'],
@@ -67,11 +68,10 @@ class CasesController extends Controller
                 null,
                 $case->toArray()
             );
-
-            return redirect()->route('cases.index')->with('success', 'Case created successfully!');
+            flash()->success('Your account has been restored.');
+            return redirect()->route('cases.index');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to create case: ' . $e->getMessage()]);
-
         }
     }
 
@@ -80,7 +80,7 @@ class CasesController extends Controller
      */
     public function show(Cases $cases)
     {
-            return view('cases.show');
+        return view('cases.show');
     }
 
     /**
@@ -88,7 +88,7 @@ class CasesController extends Controller
      */
     public function edit(Cases $cases)
     {
-            return view('cases.edit');
+        return view('cases.edit');
     }
 
     /**
@@ -96,43 +96,43 @@ class CasesController extends Controller
      */
 
 
-     public function update(Request $request, Cases $case)
-     {
-         try {
-             $validated = $request->validate([
-                 'case_title' => 'required|string|max:255',
-                 'case_type' => 'required|string',
-                 'guardian_name' => 'required|string|min:1|max:255',
-                 'guardian_contact' => 'required|string|min:1|max:11',
-                 'notes' => 'nullable|string|min:1|max:255',
-                 'status' => ['required', Rule::in(['open', 'closed', 'in_progress', 'resolved'])],
-             ]);
+    public function update(Request $request, Cases $case)
+    {
+        try {
+            $validated = $request->validate([
+                'case_title' => 'required|string|max:255',
+                'case_type' => 'required|string',
+                'guardian_name' => 'required|string|min:1|max:255',
+                'guardian_contact' => 'required|string|min:1|max:11',
+                'notes' => 'nullable|string|min:1|max:255',
+                'status' => ['required', Rule::in(['open', 'closed', 'in_progress', 'resolved'])],
+            ]);
 
-             $oldValues = $case->toArray(); // Get old values before updating
+            $oldValues = $case->toArray(); // Get old values before updating
 
-             $case->update($validated);
+            $case->update($validated);
 
-             // Log update
-             $user = Auth::user();
-             $username = $user ? $user->name : 'System';
+            // Log update
+            $user = Auth::user();
+            $username = $user ? $user->name : 'System';
 
-             $changes = array_diff_assoc($case->toArray(), $oldValues);
-             $changesFormatted = !empty($changes) ? json_encode($changes) : 'No changes detected';
+            $changes = array_diff_assoc($case->toArray(), $oldValues);
+            $changesFormatted = !empty($changes) ? json_encode($changes) : 'No changes detected';
 
-             AuditHelper::log(
-                 "(ID: $case->id, Title: $case->case_title). Changes: $changesFormatted",
-                 'Updated',
-                 'Cases',
-                 $case->id,
-                 $oldValues,
-                 $case->toArray()
-             );
+            AuditHelper::log(
+                "(ID: $case->id, Title: $case->case_title). Changes: $changesFormatted",
+                'Updated',
+                'Cases',
+                $case->id,
+                $oldValues,
+                $case->toArray()
+            );
 
-             return redirect()->route('cases.index')->with('success', 'Case updated successfully!');
-         } catch (Exception $e) {
-             return back()->withErrors(['error' => 'Failed to update case: ' . $e->getMessage()]);
-         }
-     }
+            return redirect()->route('cases.index')->with('success', 'Case updated successfully!');
+        } catch (Exception $e) {
+            return back()->withErrors(['error' => 'Failed to update case: ' . $e->getMessage()]);
+        }
+    }
 
 
 
@@ -158,11 +158,12 @@ class CasesController extends Controller
                 $oldValues,
                 null
             );
+            toastr()->success('Your account has been restored.');
+            flash()->flash('success', 'Your password has been set.');
 
-            return redirect()->route('cases.index')->with('success', 'Case deleted successfully!');
+            return redirect()->route('cases.index');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to delete case: ' . $e->getMessage()]);
         }
     }
-
 }

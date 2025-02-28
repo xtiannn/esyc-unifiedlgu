@@ -53,7 +53,8 @@
                  </li>
              </ul>
 
-             <ul class="navbar-nav flex-fill w-100 mb-2">
+             <ul
+                 class="navbar-nav flex-fill w-100 mb-2 {{ Route::currentRouteName() === '/scholarships' ? 'active' : '' }}">
                  <li class="nav-item w-100">
                      <a class="nav-link" href="#">
                          <i class="fa-solid fa-edit"></i>
@@ -71,21 +72,24 @@
                      </a>
                      <ul class="collapse list-unstyled pl-4 w-100" id="casesModule">
                          <li class="nav-item">
-                             <a class="nav-link pl-3" href="{{ route('cases.index') }}"><i
-                                     class="fa-solid fa-folder-open"></i> <span class="ml-1 item-text">All
-                                     Cases</span></a>
+                             <a class="nav-link pl-3" href="{{ route('cases.index') }}">
+                                 <i class="fa-solid fa-folder-open"></i>
+                                 <span class="ml-1 item-text">All Cases</span>
+                             </a>
                          </li>
                          <li class="nav-item">
-                             <a class="nav-link pl-3" href="{{ route('auditLog.index') }}""><i
-                                     class="fa-solid fa-clock-rotate-left"></i> <span class="ml-1 item-text">Audit
-                                     Logs</span></a>
+                             <a class="nav-link pl-3" href="{{ route('auditLog.index') }}">
+                                 <i class="fa-solid fa-clock-rotate-left"></i>
+                                 <span class="ml-1 item-text">Audit Logs</span>
+                             </a>
                          </li>
                      </ul>
                  </li>
 
              </ul>
 
-             <ul class="navbar-nav flex-fill w-100 mb-2">
+             <ul
+                 class="navbar-nav flex-fill w-100 mb-2 {{ Route::currentRouteName() === '/messages' ? 'active' : '' }}">
                  <li class="nav-item w-100">
                      <a class="nav-link" href="#">
                          <i class="fa-solid fa-message"></i>

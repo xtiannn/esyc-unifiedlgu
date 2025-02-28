@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Exception;
-use Hash;
+use Flasher\Prime\Flasher;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -48,8 +49,8 @@ class UserController extends Controller
                 'role' => $validated['role'], // Ensure the value matches ENUM options
                 'password' => Hash::make($validated['password']),
             ]);
-
-            return redirect()->route('users.index')->with('success', 'User created successfully!');
+            flash()->success('User created successfully!');
+            return redirect()->route('users.index');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()]);
         }
@@ -106,7 +107,10 @@ class UserController extends Controller
     {
         try {
             $user->delete();
-            return redirect()->route('users.index')->with('success', 'User deleted successfully!');
+
+            flash()->success('User deleted successfully!');
+
+            return redirect()->back();
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to delete user: ' . $e->getMessage()]);
         }

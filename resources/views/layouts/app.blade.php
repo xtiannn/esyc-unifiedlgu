@@ -88,12 +88,12 @@
 </head>
 
 
-<div class="loader-mask">
+{{-- <div class="loader-mask">
     <div class="loader">
         <div></div>
         <div></div>
     </div>
-</div>
+</div> --}}
 
 
 <body class="vertical light">
@@ -108,6 +108,7 @@
 
         <main role="main" class="main-content">
 
+            @flasher_render
             <!--Notification Modal  -->
             @include('partials.notification-modal')
             <!--End Notification Modal  -->

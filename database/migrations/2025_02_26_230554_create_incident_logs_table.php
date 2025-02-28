@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('media_path', 255)->nullable();
             $table->enum('status', ['pending', 'resolved', 'closed'])->default('pending');
             $table->string('location', 255)->nullable();
-            $table->dateTime('incident_date')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->dateTime('incident_date')->default(now());
             $table->timestamps();
 
             $table->foreign('reported_by')->references('id')->on('users')->onDelete('cascade');

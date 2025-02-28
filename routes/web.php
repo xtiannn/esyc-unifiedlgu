@@ -25,10 +25,8 @@ Route::get('emergency', [EmergencyController::class, 'index'])->name('emergency.
 Route::get('incidents', [EmergencyController::class, 'incidents'])->name('emergency.incidents');
 
 
-
-
 // User Management Routes
-Route::prefix('users')->group(function () {
+Route::prefix('users')->middleware('web')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('users.index'); // Show all users
     Route::post('/', [UserController::class, 'store'])->name('users.store'); // Store user
     Route::get('/create', [UserController::class, 'create'])->name('users.create'); // Show create form
