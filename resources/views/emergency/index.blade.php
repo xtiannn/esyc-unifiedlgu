@@ -4,7 +4,7 @@
             <h1>Emergency Alerts</h1>
         </div>
         <div class="col-md-2">
-            <button type="button" class="btn btn-warning mt-2" data-bs-toggle="modal" data-bs-target="#sendAlertModal">
+            <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#sendAlertModal">
                 <i class="fa fa-bell mr-2"></i> Send Alert
             </button>
         </div>
@@ -14,49 +14,47 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Role</th>
+                    <th scope="col">Media</th>
+                    <th scope="col">Media Type</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Message</th>
+                    <th scope="col">Created By</th>
                     <th scope="col">Date Created</th>
-                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {{-- @foreach ($users as $user)
+                @forelse ($emergencies as $emergency)
                     <tr>
                         <td data-label="#">{{ $loop->iteration }}.</td>
-                        <td data-label="Name">{{ $user->name }}</td>
-                        <td data-label="Email">{{ $user->email }}</td>
-                        <td data-label="Role">{{ $user->role }}</td>
-                        <td data-label="DateCreated">{{ $user->created_at->format('F j, Y g:i A') }}</td>
-                        <td data-label="Action">
-                            <button class="btn btn-primary btn-sm editUserBtn"
-                                data-id="{{ $user->id }}"
-                                data-name="{{ $user->name }}"
-                                data-email="{{ $user->email }}"
-                                data-role="{{ $user->role }}"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editUserModal">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Your are about to delete user')">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </form>
+                        <td data-label="Media">
+                            @if ($emergency->media_type === 'image')
+                                <a href="{{ asset('storage/' . $emergency->media_path) }}" target="_blank">
+                                    <img src="{{ asset('storage/' . $emergency->media_path) }}" alt="Media"
+                                        width="100">
+                                </a>
+                            @elseif ($emergency->media_type === 'video')
+                                <video width="150" controls>
+                                    <source src="{{ asset('storage/' . $emergency->media_path) }}" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            @else
+                                No media
+                            @endif
                         </td>
+                        <td data-label="Media-type">{{ ucfirst($emergency->media_type) }}</td>
+                        <td data-label="Title">{{ $emergency->title }}</td>
+                        <td data-label="Message">{{ $emergency->message }}</td>
+                        <td data-label="Created-by">{{ $emergency->created_by ?? 'Unknown' }}</td>
+                        <td data-label="Date-created">{{ $emergency->created_at->format('F j, Y g:i A') }}</td>
                     </tr>
-                @endforeach --}}
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center">No data found</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 
-
-    {{-- @include('users.modals.addUser'); --}}
-
-
-
+    @include('emergency.modals.sendAlert')
 </x-app-layout>
