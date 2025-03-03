@@ -30,7 +30,9 @@
                         <td data-label="Name">{{ $user->name }}</td>
                         <td data-label="Email">{{ $user->email }}</td>
                         <td data-label="Role">{{ $user->role }}</td>
-                        <td data-label="DateCreated">{{ $user->created_at->format('F j, Y g:i A') }}</td>
+                        <td data-label="DateCreated">
+                            {{ $user->created_at ? $user->created_at->format('F d, Y') : 'N/A' }}
+                        </td>
                         <td data-label="Action">
                             <button class="btn btn-primary btn-sm editUserBtn" data-id="{{ $user->id }}"
                                 data-name="{{ $user->name }}" data-email="{{ $user->email }}"

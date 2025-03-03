@@ -28,9 +28,6 @@ return new class extends Migration
             $table->string('household_number', 50)->nullable();
             $table->string('barangay_id', 50)->nullable();
             $table->boolean('is_resident')->default(true);
-            $table->enum('scholarship_status', ['not_applied', 'applied', 'interview_scheduled', 'approved', 'rejected'])->default('not_applied');
-            $table->dateTime('application_date')->nullable();
-            $table->string('document_path')->nullable();
             $table->string('profile_picture')->nullable();
             $table->timestamps();
         });
