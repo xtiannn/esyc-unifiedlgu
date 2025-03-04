@@ -19,14 +19,11 @@ class EmergencyController extends Controller
     {
         $emergencies = Emergency::all();
         return view('emergency.index', compact('emergencies'));
-
-
     }
 
     public function incidents()
     {
         return view('emergency.incidents');
-
     }
 
     /**
@@ -77,7 +74,7 @@ class EmergencyController extends Controller
             'message' => $request->message,
             'media_path' => $mediaPath,
             'media_type' => $mediaType,
-            'created_by' => Auth::id(),
+            'created_by' => \Illuminate\Support\Facades\Auth::id(),
         ]);
 
         return redirect()->back()->with('success', 'Emergency alert sent successfully.');
