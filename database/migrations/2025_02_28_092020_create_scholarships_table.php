@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('interview_schedule', function (Blueprint $table) {
+        Schema::create('scholarships', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('interview_slot_id')->nullable()->constrained('interview_slots')->onDelete('set null');
-            $table->dateTime('interview_date');
-            $table->enum('status', ['pending', 'completed'])->default('pending');
+            $table->date('application_date')->nullable();
+            $table->string('document_path')->nullable();
+            $table->enum('scholarship_status', ['not_applied', 'applied', 'interview_scheduled', 'approved', 'rejected'])->default('not_applied');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('interview_schedule');
+        Schema::dropIfExists('scholarships');
     }
 };

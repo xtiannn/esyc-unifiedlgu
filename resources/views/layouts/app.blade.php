@@ -11,7 +11,7 @@
     <title>System UI Template</title>
 
     <!-- Simple bar CSS (for scvrollbar)-->
-    <link rel="stylesheet" href="css/simplebar.css">
+    <link rel="stylesheet" href="{{ asset('css/simplebar.css') }}">
     <!-- Fonts CSS -->
     <link
         href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
@@ -20,10 +20,10 @@
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <!-- Icons CSS -->
-    <link rel="stylesheet" href="css/feather.css">
+    <link rel="stylesheet" href="{{ asset('css/feather.css') }}">
     <!-- App CSS -->
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/custom-css.css">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom-css.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
     <style>
@@ -96,7 +96,7 @@
 </div>
 
 
-<body class="vertical  light">
+<body class="vertical light">
     <div class="wrapper">
         <!-- Navigation Bar -->
         @include('partials.navbar')
@@ -107,12 +107,13 @@
         <!-- End Sidebar  -->
 
         <main role="main" class="main-content">
-
             <!--Notification Modal  -->
             @include('partials.notification-modal')
             <!--End Notification Modal  -->
 
             <div class="container-fluid">
+
+
                 {{ $slot }}
             </div>
         </main>
@@ -120,36 +121,35 @@
 
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="js/jquery.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/moment.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/simplebar.min.js"></script>
-    <script src='js/daterangepicker.js'></script>
-    <script src='js/jquery.stickOnScroll.js'></script>
-    <script src="js/tinycolor-min.js"></script>
-    <script src="js/d3.min.js"></script>
-    <script src="js/topojson.min.js"></script>
-    <script src="js/Chart.min.js"></script>
-    <script src="js/gauge.min.js"></script>
-    <script src="js/jquery.sparkline.min.js"></script>
-    <script src="js/apexcharts.min.js"></script>
-    <script src="js/apexcharts.custom.js"></script>
-    <script src='js/jquery.mask.min.js'></script>
-    <script src='js/select2.min.js'></script>
-    <script src='js/jquery.steps.min.js'></script>
-    <script src='js/jquery.validate.min.js'></script>
-    <script src='js/jquery.timepicker.js'></script>
-    <script src='js/dropzone.min.js'></script>
-    <script src='js/uppy.min.js'></script>
-    <script src='js/quill.min.js'></script>
-    <script src="js/apps.js"></script>
-    <script src="js/preloader.js"></script>
-    <script src="js/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
-    <script src="js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script src='js/jquery.dataTables.min.js'></script>
-    <script src='js/dataTables.bootstrap4.min.js'></script>
-
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/popper.min.js') }}"></script>
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/simplebar.min.js') }}"></script>
+    <script src="{{ asset('js/daterangepicker.js') }}"></script>
+    <script src="{{ asset('js/jquery.stickOnScroll.js') }}"></script>
+    <script src="{{ asset('js/tinycolor-min.js') }}"></script>
+    <script src="{{ asset('js/d3.min.js') }}"></script>
+    <script src="{{ asset('js/topojson.min.js') }}"></script>
+    <script src="{{ asset('js/Chart.min.js') }}"></script>
+    <script src="{{ asset('js/gauge.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.sparkline.min.js') }}"></script>
+    <script src="{{ asset('js/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('js/apexcharts.custom.js') }}"></script>
+    <script src="{{ asset('js/jquery.mask.min.js') }}"></script>
+    <script src="{{ asset('js/select2.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.steps.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.timepicker.js') }}"></script>
+    <script src="{{ asset('js/dropzone.min.js') }}"></script>
+    <script src="{{ asset('js/uppy.min.js') }}"></script>
+    <script src="{{ asset('js/quill.min.js') }}"></script>
+    <script src="{{ asset('js/apps.js') }}"></script>
+    <script src="{{ asset('js/preloader.js') }}"></script>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/bootstrap.bundle.min.js') }}" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
 </body>
 
 </html>

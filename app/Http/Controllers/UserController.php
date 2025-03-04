@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Scholarship;
 use App\Models\User;
 use Exception;
-use Hash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -13,6 +14,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
         $users = User::all(); // Fetch all users
@@ -34,7 +36,7 @@ class UserController extends Controller
     {
         try {
             // Validate request
-            $validated = $request->validate([
+            $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|max:255',
@@ -42,14 +44,16 @@ class UserController extends Controller
             ]);
 
             // Create new user with hashed password
-            User::create([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'role' => $validated['role'], // Ensure the value matches ENUM options
-                'password' => Hash::make($validated['password']),
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'role' => $request->role, // Ensure the value matches ENUM options
+                'password' => Hash::make($request->password),
             ]);
 
-            return redirect()->route('users.index')->with('success', 'User created successfully!');
+            flash()->success('User created successfully!');
+
+            return redirect()->route('users.index');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()]);
         }
@@ -106,7 +110,10 @@ class UserController extends Controller
     {
         try {
             $user->delete();
-            return redirect()->route('users.index')->with('success', 'User deleted successfully!');
+
+            flash()->success('User deleted successfully!');
+
+            return redirect()->route('users.index');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to delete user: ' . $e->getMessage()]);
         }

@@ -20,6 +20,8 @@
     "dependencies": {
         "@emotion/react": "^11.14.0",
         "@emotion/styled": "^11.14.0",
-        "@mui/material": "^6.4.6"
+        "@mui/material": "^6.4.6",
+        "flasher": "^0.1.0",
+        "toastr": "^2.1.4"
     }
 }
