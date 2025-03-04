@@ -90,9 +90,9 @@
              </ul>
 
              <ul
-                 class="navbar-nav flex-fill w-100 mb-2 {{ Route::currentRouteName() === '/messages' ? 'active' : '' }}">
+                 class="navbar-nav flex-fill w-100 mb-2 {{ Route::currentRouteName() === 'messages.index' ? 'active' : '' }}">
                  <li class="nav-item w-100">
-                     <a class="nav-link" href="#">
+                     <a class="nav-link" href="{{ route('messages.index') }}">
                          <i class="fa-solid fa-message"></i>
                          <span class="ml-3 item-text">Messages</span>
                      </a>

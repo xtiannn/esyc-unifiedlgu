@@ -35,6 +35,7 @@ class User extends Authenticatable
         'barangay_id',
         'is_resident',
         'profile_picture',
+        'is_agent'
     ];
 
     public function logs()
@@ -42,9 +43,30 @@ class User extends Authenticatable
         return $this->hasMany(AuditLog::class);
     }
 
-    public function scholarship()
+    public function scholarships()
     {
         return $this->hasMany(ScholarshipController::class);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class, 'user_id');
+    }
+
+    public function assignedConversations()
+    {
+        return $this->hasMany(Conversation::class, 'agent_id');
+    }
+
+
+    public function isAgent(): bool
+    {
+        return $this->is_agent;
     }
 
     /**
@@ -67,6 +89,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_agent' => 'boolean',
         ];
     }
 }

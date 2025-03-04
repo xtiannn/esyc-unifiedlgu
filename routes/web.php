@@ -3,8 +3,10 @@
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScholarshipController;
+use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CasesController;
 use Illuminate\Support\Facades\Auth;
@@ -94,5 +96,20 @@ Route::delete('/cases/{case}', [CasesController::class, 'destroy'])->name('cases
 
 // Audit Log Route (restrict to Admins if needed)
 Route::get('/auditLog', [AuditLogController::class, 'index'])->name('auditLog.index');
+
+
+// Chat Management
+Route::get('/messages', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
+Route::post('/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/support', [SupportController::class, 'index'])->name('support.index');
+    Route::get('/support/{conversation}', [SupportController::class, 'show'])->name('support.show');
+    Route::post('/support/{conversation}', [SupportController::class, 'storeMessage'])->name('support.store');
+    Route::post('/support/start', [SupportController::class, 'startConversation'])->name('support.start');
+    Route::post('/support/{conversation}/assign', [SupportController::class, 'assignAgent'])->name('support.assign');
+});
+
+
 
 require __DIR__ . '/auth.php';
