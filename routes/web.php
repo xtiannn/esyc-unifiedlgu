@@ -65,6 +65,7 @@ Route::middleware('auth')->group(function () {
 // Emergency routes (public or adjust as needed)
 Route::get('/emergency', [EmergencyController::class, 'index'])->name('emergency.index');
 Route::get('/incidents', [EmergencyController::class, 'incidents'])->name('emergency.incidents');
+Route::post('/emergency', [EmergencyController::class, 'store'])->name('emergency.store');
 
 // User Management Routes (restrict to Admins if needed)
 Route::prefix('users')->middleware('web')->group(function () {

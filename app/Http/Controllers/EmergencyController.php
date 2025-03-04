@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Emergency;
 use App\Http\Requests\StoreEmergencyRequest;
 use App\Http\Requests\UpdateEmergencyRequest;
+use Illuminate\Http\Request;
+use Auth;
+use Exception;
+// use Request;
 
 class EmergencyController extends Controller
 {
@@ -13,8 +17,12 @@ class EmergencyController extends Controller
      */
     public function index()
     {
-        return view('emergency.index');
+        $emergencies = Emergency::all();
+        return view('emergency.index', compact('emergencies'));
+
+
     }
+
     public function incidents()
     {
         return view('emergency.incidents');
@@ -32,10 +40,50 @@ class EmergencyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEmergencyRequest $request)
+    public function store(Request $request)
     {
-        return view('emergency.store');
+        // Validate the form data
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'message' => 'required|string',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4,mov,avi|max:10240',
+        ]);
+
+        // Initialize default values
+        $mediaPath = null;
+        $mediaType = null;
+
+        if ($request->hasFile('media')) {
+            $file = $request->file('media');
+            $mediaPath = $file->store('emergencies', 'public');
+
+            // Determine media type based on ENUM values
+            $imageExtensions = ['jpg', 'jpeg', 'png'];
+            $videoExtensions = ['mp4', 'mov', 'avi'];
+            $extension = strtolower($file->getClientOriginalExtension());
+
+            if (in_array($extension, $imageExtensions)) {
+                $mediaType = 'image';
+            } elseif (in_array($extension, $videoExtensions)) {
+                $mediaType = 'video';
+            } else {
+                return redirect()->back()->withErrors(['media' => 'Invalid media type.']);
+            }
+        }
+
+        // Create a new emergency alert
+        Emergency::create([
+            'title' => $request->title,
+            'message' => $request->message,
+            'media_path' => $mediaPath,
+            'media_type' => $mediaType,
+            'created_by' => Auth::id(),
+        ]);
+
+        return redirect()->back()->with('success', 'Emergency alert sent successfully.');
     }
+
+
 
     /**
      * Display the specified resource.
