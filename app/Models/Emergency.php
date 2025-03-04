@@ -19,4 +19,11 @@ class Emergency extends Model
         'media_path',
         'media_type'
     ];
+
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
 }

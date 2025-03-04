@@ -9,6 +9,7 @@ use App\Http\Controllers\ScholarshipController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CasesController;
+use App\Http\Controllers\IncidentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -62,34 +63,36 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Emergency routes (public or adjust as needed)
-Route::get('/emergency', [EmergencyController::class, 'index'])->name('emergency.index');
-Route::get('/incidents', [EmergencyController::class, 'incidents'])->name('emergency.incidents');
-Route::post('/emergency', [EmergencyController::class, 'store'])->name('emergency.store');
-
-// User Management Routes (restrict to Admins if needed)
-Route::prefix('users')->middleware('web')->group(function () {
-    Route::get('/', [UserController::class, 'index'])->name('users.index'); // Show all users
-    Route::post('/', [UserController::class, 'store'])->name('users.store'); // Store user
-    Route::get('/create', [UserController::class, 'create'])->name('users.create'); // Show create form
-    Route::get('/{user}', [UserController::class, 'show'])->name('users.show'); // Show a single user
-    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit'); // Show edit form
-    Route::put('/{user}', [UserController::class, 'update'])->name('users.update'); // Update user
-    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy'); // Delete user
+// Emergency Management Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/emergency', [EmergencyController::class, 'index'])->name('emergency.index');
+    Route::post('/emergency', [EmergencyController::class, 'store'])->name('emergency.store');
+    Route::get('/emergency/{emergency}', [EmergencyController::class, 'show'])->name('emergency.show');
+    Route::delete('/emergency/{emergency}', [EmergencyController::class, 'destroy'])->name('emergency.destroy');
 });
 
-// Case Management Routes (Commented Out, Kept as Requested)
-// Route::prefix('cases')->group(function () {
-//     Route::get('/', [CasesController::class, 'index'])->name('cases.index');
-//     Route::post('/', [CasesController::class, 'store'])->name('cases.store');
-//     Route::get('/create', [CasesController::class, 'create'])->name('cases.create');
-//     Route::get('/{case}', [CasesController::class, 'show'])->name('cases.show');
-//     Route::get('/{case}/edit', [CasesController::class, 'edit'])->name('cases.edit');
-//     Route::put('/{case}', [CasesController::class, 'update'])->name('cases.update');
-//     Route::delete('/{case}', [CasesController::class, 'destroy'])->name('cases.destroy');
-// });
+// Incident Logs Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/incidents', [IncidentController::class, 'index'])->name('incident.index');
+    Route::post('/incidents', [IncidentController::class, 'store'])->name('incident.store');
+    Route::get('/incidents/{incident}', [IncidentController::class, 'show'])->name('incident.show');
+    Route::delete('/incidents/{incident}', [IncidentController::class, 'destroy'])->name('incident.destroy');
+});
 
-// Active Case Management Routes (public or adjust as needed)
+
+
+// User Management Routes
+Route::prefix('users')->middleware('web')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('users.index');
+    Route::post('/', [UserController::class, 'store'])->name('users.store');
+    Route::get('/create', [UserController::class, 'create'])->name('users.create');
+    Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
+
+// Active Case Management Routes
 Route::get('/cases', [CasesController::class, 'index'])->name('cases.index');
 Route::post('/cases', [CasesController::class, 'store'])->name('cases.store');
 Route::put('/cases/{case}', [CasesController::class, 'update'])->name('cases.update');

@@ -15,7 +15,6 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Media</th>
-                    <th scope="col">Media Type</th>
                     <th scope="col">Title</th>
                     <th scope="col">Message</th>
                     <th scope="col">Created By</th>
@@ -30,7 +29,7 @@
                             @if ($emergency->media_type === 'image')
                                 <a href="{{ asset('storage/' . $emergency->media_path) }}" target="_blank">
                                     <img src="{{ asset('storage/' . $emergency->media_path) }}" alt="Media"
-                                        width="100">
+                                        class="small-image">
                                 </a>
                             @elseif ($emergency->media_type === 'video')
                                 <video width="150" controls>
@@ -41,10 +40,9 @@
                                 No media
                             @endif
                         </td>
-                        <td data-label="Media-type">{{ ucfirst($emergency->media_type) }}</td>
                         <td data-label="Title">{{ $emergency->title }}</td>
                         <td data-label="Message">{{ $emergency->message }}</td>
-                        <td data-label="Created-by">{{ $emergency->created_by ?? 'Unknown' }}</td>
+                        <td data-label="Created-by">{{ $emergency->creator->name ?? 'Unknown' }}</td>
                         <td data-label="Date-created">{{ $emergency->created_at->format('F j, Y g:i A') }}</td>
                     </tr>
                 @empty
