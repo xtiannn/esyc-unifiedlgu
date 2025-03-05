@@ -45,7 +45,7 @@
                              </a>
                          </li>
                          <li class="nav-item">
-                             <a class="nav-link pl-3" href="{{ route('emergency.incidents') }}">
+                             <a class="nav-link pl-3" href="{{ route('incident.index') }}">
                                  <i class="fa-solid fa-clipboard-list"></i> <span class="ml-1 item-text">Incident
                                      Logs</span>
                              </a>

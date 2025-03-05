@@ -46,6 +46,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(ScholarshipController::class);
     }
+    public function emergency()
+    {
+        return $this->belongsTo(Emergency::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
