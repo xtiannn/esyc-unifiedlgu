@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageSent;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,12 @@ class MessageController extends Controller
      */
     public function index()
     {
-        $messages = Message::with('user')->latest()->get();
+        $messages = Message::where('sender_id', Auth::id())
+            ->orWhere('receiver_id', Auth::id())
+            ->with(['sender', 'receiver'])
+            ->orderBy('created_at', 'asc')
+            ->get();
+
         return view('messages.index', compact('messages'));
     }
 
@@ -30,14 +36,26 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate(['content' => 'required|string|max:1000']);
-
-        $message = Message::create([
-            'user_id' => Auth::id(),
-            'content' => $request->content
+        $request->validate([
+            'receiver_id' => 'required|exists:users,id|not_in:' . Auth::id(),
+            'message' => 'required|string|max:500',
         ]);
 
-        return redirect()->route('messages.index');
+        $message = Message::create([
+            'sender_id' => Auth::id(),
+            'receiver_id' => $request->receiver_id,
+            'message' => $request->message,
+        ]);
+
+        // Load sender relationship for broadcast
+        $message->load('sender');
+
+        broadcast(new MessageSent($message))->toOthers();
+
+        return response()->json([
+            'success' => true,
+            'message' => $message
+        ]);
     }
 
     /**
