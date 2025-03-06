@@ -36,7 +36,11 @@
                         <td data-label="Action">
                             <button class="btn btn-primary btn-sm editUserBtn" data-id="{{ $user->id }}"
                                 data-name="{{ $user->name }}" data-email="{{ $user->email }}"
-                                data-role="{{ $user->role }}" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                                data-role="{{ $user->role }}" data-contact="{{ $user->contact }}"
+                                data-birthdate="{{ $user->birthdate }}" data-civil-status="{{ $user->civil_status }}"
+                                data-gender="{{ $user->gender }}" data-occupation="{{ $user->occupation }}"
+                                data-barangay-id="{{ $user->barangay_id }}" data-address="{{ $user->address }}"
+                                data-bs-toggle="modal" data-bs-target="#editUserModal">
                                 <i class="fa fa-edit"></i>
                             </button>
                             <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">

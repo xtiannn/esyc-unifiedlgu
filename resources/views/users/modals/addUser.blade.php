@@ -12,12 +12,14 @@
 
                     <div class="mb-3">
                         <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
+                        <input type="text" class="form-control" id="name" name="name"
+                            value="{{ old('name') }}" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
+                        <input type="email" class="form-control" id="email" name="email"
+                            value="{{ old('email') }}" required>
                     </div>
 
                     <div class="mb-3">
@@ -40,7 +42,7 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fa fa-times-circle"></i> Cancel
 
-                            </button>
+                        </button>
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-save"></i> Save
                         </button>
@@ -87,8 +89,10 @@
                     <div class="mb-3">
                         <label for="edit_role" class="form-label">Role</label>
                         <select class="form-control" id="edit_role" name="role" style="height: 40px">
-                            <option value="Admin" {{ old('role', $user->role) == 'Admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="User" {{ old('role', $user->role) == 'User' ? 'selected' : '' }}>User</option>
+                            <option value="Admin" {{ old('role', $user->role) == 'Admin' ? 'selected' : '' }}>Admin
+                            </option>
+                            <option value="User" {{ old('role', $user->role) == 'User' ? 'selected' : '' }}>User
+                            </option>
                         </select>
                     </div>
 
@@ -109,10 +113,10 @@
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
 
         document.querySelectorAll(".editUserBtn").forEach(button => {
-            button.addEventListener("click", function () {
+            button.addEventListener("click", function() {
                 let userId = this.getAttribute("data-id");
                 let userName = this.getAttribute("data-name");
                 let userEmail = this.getAttribute("data-email");
@@ -137,7 +141,7 @@
 
         // Show/Hide Password Toggle
         document.querySelectorAll(".toggle-password").forEach(button => {
-            button.addEventListener("click", function () {
+            button.addEventListener("click", function() {
                 let targetId = this.getAttribute("data-target");
                 let targetInput = document.getElementById(targetId);
                 if (targetInput.type === "password") {

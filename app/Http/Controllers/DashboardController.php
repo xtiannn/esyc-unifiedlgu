@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cases;
+use App\Models\Emergency;
 use App\Models\Scholarship;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -50,7 +51,9 @@ class DashboardController extends Controller
 
     public function users()
     {
-        return view('dashboard.users');
+        $cases = Cases::all();
+        $alerts = Emergency::all();
+        return view('dashboard.users', compact('cases', 'alerts'));
     }
 
 }

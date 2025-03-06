@@ -45,7 +45,8 @@ class User extends Authenticatable
 
     public function scholarships()
     {
-        return $this->hasMany(ScholarshipController::class);
+        // return $this->hasMany(ScholarshipController::class);
+        return $this->hasOne(Scholarship::class, 'user_id');
     }
     public function emergency()
     {
