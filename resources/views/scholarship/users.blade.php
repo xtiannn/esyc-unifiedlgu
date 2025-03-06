@@ -28,12 +28,31 @@
             <div class="animated fadeIn">
                 <p class="fs-3 fw-bold text-dark">Ready to Apply?</p>
                 <p class="text-muted fs-5 mb-4">Take the first step towards your scholarship today!</p>
-                {{-- <a href="{{ route('scholarship.apply') }}" --}}
-                <a href="#" class="btn btn-primary btn-lg px-5 py-3 shadow-sm hover-lift">
+
+                <button class="btn btn-primary btn-lg px-5 py-3 shadow-sm hover-lift" data-bs-toggle="modal"
+                    data-bs-target="#applyScholarship">
                     Apply Now
-                </a>
+                </button>
             </div>
         @endif
+    </div>
+
+    <div class="modal fade" id="applyScholarship" tabindex="-1" aria-labelledby="applyScholarship" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Apply Scholarship</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Add custom animations and styles -->

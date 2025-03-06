@@ -77,7 +77,7 @@
         </ul>
     </nav>
 
-    @include('users.modals.addUser');
+    @include('users.modals.addUser')
 
 
 
