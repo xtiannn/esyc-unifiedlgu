@@ -1,6 +1,8 @@
 <x-app-layout>
+    @section('title', 'Case Management')
+
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-10 mb-2">
             <h1>Case Management</h1>
         </div>
         <div class="col-md-2">
@@ -32,26 +34,21 @@
                         <td data-label="Role">{{ $case->status }}</td>
                         <td data-label="DateCreated">{{ $case->created_at->format('F j, Y g:i A') }}</td>
                         <td data-label="Action">
-                            <button class="btn btn-primary btn-sm editCaseBtn"
-                                data-id="{{ $case->id }}"
-                                data-case_title="{{ $case->case_title }}"
-                                data-case_type="{{ $case->case_type }}"
+                            <button class="btn btn-primary btn-sm editCaseBtn" data-id="{{ $case->id }}"
+                                data-case_title="{{ $case->case_title }}" data-case_type="{{ $case->case_type }}"
                                 data-guardian_name="{{ $case->guardian_name }}"
-                                data-guardian_contact="{{ $case->guardian_contact }}"
-                                data-status="{{ $case->status }}"
-                                data-notes="{{ $case->notes }}"
-                                data-bs-toggle="modal"
+                                data-guardian_contact="{{ $case->guardian_contact }}" data-status="{{ $case->status }}"
+                                data-notes="{{ $case->notes }}" data-bs-toggle="modal"
                                 data-bs-target="#editCaseModal">
                                 <i class="fa fa-edit"></i>
                             </button>
-                            <form action="{{ route('cases.destroy', $case->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Your are about to delete case')">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </form>
+
+                            {{-- Reusable Delete Button --}}
+                            @include('components.delete-button', [
+                                'id' => $case->id,
+                                'route' => route('cases.destroy', $case->id),
+                                'itemName' => $case->case_title,
+                            ])
                         </td>
                     </tr>
                 @empty
@@ -65,8 +62,6 @@
 
 
 
-@include('cases.modals.addCase')
+    @include('cases.modals.addCase')
 
 </x-app-layout>
-
-

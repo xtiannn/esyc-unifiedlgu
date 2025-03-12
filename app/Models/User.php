@@ -35,8 +35,14 @@ class User extends Authenticatable
         'barangay_id',
         'is_resident',
         'profile_picture',
-        'is_agent'
+        'is_agent',
+        'is_online'
     ];
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
 
     public function logs()
     {

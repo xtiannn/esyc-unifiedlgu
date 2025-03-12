@@ -1,10 +1,25 @@
 <x-app-layout>
+    @section('title', 'Emergency Alerts')
+
+    <style>
+        .media-cell {
+            width: 100px;
+            text-align: center;
+        }
+
+        .media-content {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-10 mb-4">
             <h1>Emergency Alerts</h1>
         </div>
         <div class="col-md-2">
-            <button type="button" class="btn btn-success mt-2" data-bs-toggle="modal" data-bs-target="#sendAlertModal">
+            <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#sendAlertModal">
                 <i class="fa fa-bell mr-2"></i> Send Alert
             </button>
         </div>
@@ -25,14 +40,14 @@
                 @forelse ($emergencies as $alert)
                     <tr>
                         <td data-label="#">{{ $loop->iteration }}.</td>
-                        <td data-label="Media">
-                            @if ($alert->media_type === 'image')
+                        <td data-label="Media" class="media-cell">
+                            @if ($alert->media_type === 'Image')
                                 <a href="{{ asset('storage/' . $alert->media_path) }}" target="_blank">
                                     <img src="{{ asset('storage/' . $alert->media_path) }}" alt="Media"
                                         class="small-image">
                                 </a>
-                            @elseif ($alert->media_type === 'video')
-                                <video width="150" controls>
+                            @elseif ($alert->media_type === 'Video')
+                                <video class="media-content" controls>
                                     <source src="{{ asset('storage/' . $alert->media_path) }}" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
@@ -40,6 +55,7 @@
                                 No media
                             @endif
                         </td>
+
                         <td data-label="Title">{{ $alert->title }}</td>
                         <td data-label="Message">
                             <a href="#" data-bs-toggle="modal" data-bs-target="#alertModal{{ $alert->id }}">
@@ -68,8 +84,6 @@
                             </div>
                         </div>
                     </div>
-
-
                 @empty
                     <tr>
                         <td colspan="7" class="text-center">No data found</td>

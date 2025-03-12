@@ -1,6 +1,6 @@
-
-
 <x-app-layout>
+    @section('title', 'Audit Logs')
+
     <div class="row">
         <div class="col-md-10">
             <h1>Audit Logs</h1>

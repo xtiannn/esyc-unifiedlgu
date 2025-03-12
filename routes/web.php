@@ -10,8 +10,12 @@ use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CasesController;
 use App\Http\Controllers\IncidentController;
+use App\Models\Announcement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BotResponseController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AnnouncementController;
 
 // Root route: Redirect based on auth status
 Route::get('/', function () {
@@ -42,6 +46,9 @@ Route::get('/scholarships', function () {
     }
     return redirect()->route('login');
 })->name('scholarship');
+
+// Logout route
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Authenticated and verified routes
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -76,10 +83,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/incidents', [IncidentController::class, 'index'])->name('incident.index');
     Route::post('/incidents', [IncidentController::class, 'store'])->name('incident.store');
     Route::get('/incidents/{incident}', [IncidentController::class, 'show'])->name('incident.show');
+    Route::put('/incidents/{incident}', [IncidentController::class, 'update'])->name('incident.update');
     Route::delete('/incidents/{incident}', [IncidentController::class, 'destroy'])->name('incident.destroy');
+
+    // Custom route for updating incident status
+    Route::post('/incident/{incident}/update-status', [IncidentController::class, 'updateStatus'])
+        ->name('incident.updateStatus')
+        ->middleware('auth');
 });
-
-
 
 // User Management Routes
 Route::prefix('users')->middleware('web')->group(function () {
@@ -101,11 +112,13 @@ Route::delete('/cases/{case}', [CasesController::class, 'destroy'])->name('cases
 // Audit Log Route (restrict to Admins if needed)
 Route::get('/auditLog', [AuditLogController::class, 'index'])->name('auditLog.index');
 
+// Messages Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('/chat/send', [MessageController::class, 'store']);
+});
 
-// Chat Management
-Route::get('/messages', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
-Route::post('/messages', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
-
+// Support System Routes
 Route::middleware('auth')->group(function () {
     Route::get('/support', [SupportController::class, 'index'])->name('support.index');
     Route::get('/support/{conversation}', [SupportController::class, 'show'])->name('support.show');
@@ -114,6 +127,36 @@ Route::middleware('auth')->group(function () {
     Route::post('/support/{conversation}/assign', [SupportController::class, 'assignAgent'])->name('support.assign');
 });
 
+// Bot Response Management Routes
+Route::middleware('auth')->group(function () {
+    Route::resource('bot_responses', BotResponseController::class);
+    Route::post('/chat/connect-admin', [MessageController::class, 'connectToAdmin']);
+});
 
+// Announcements Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+    Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+    Route::get('/announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
+    Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+    Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 
+    // Fetch latest announcements as JSON
+    Route::get('/announcements/fetch', function () {
+        $announcements = Announcement::latest()->limit(5)->get();
+        return response()->json([
+            'count' => $announcements->count(),
+            'announcements' => $announcements->map(function ($announcement) {
+                return [
+                    'title' => $announcement->title,
+                    'message' => $announcement->message,
+                    'time' => $announcement->created_at->diffForHumans(),
+                ];
+            }),
+        ]);
+    })->name('announcements.fetch');
+});
+
+// Include authentication routes
 require __DIR__ . '/auth.php';

@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'Dashboard')
 
     <style>
         body {

@@ -1,4 +1,6 @@
 <x-app-layout>
+    @section('title', 'Scholarship')
+
     <div class="row">
         <div class="col-md-10">
             <h1>Scholarships</h1>

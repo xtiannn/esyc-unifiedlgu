@@ -40,15 +40,32 @@ class UserController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8|max:255',
-                'role' => 'required|string', // Removed Rule::in
+                'address' => 'required|string|max:100',
+                'role' => 'required|string|max:5',
+                'contact_number' => 'required|string|max:15',
+                'birth_date' => 'required',
+                'civil_status' => 'required|string',
+                'gender' => 'required|string',
+                'occupation' => 'required|string',
+                'household_number' => 'required|string',
+                'barangay_id' => 'required|string',
             ]);
 
             // Create new user with hashed password
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'role' => $request->role, // Ensure the value matches ENUM options
                 'password' => Hash::make($request->password),
+                'address' => $request->address,
+                'role' => $request->role,
+                'contact_number' => $request->contact_number,
+                'birth_date' => $request->birth_date,
+                'civil_status' => $request->civil_status,
+                'gender' => $request->gender,
+                'occupation' => $request->occupation,
+                'household_number' => $request->household_number,
+                'barangay_id' => $request->barangay_id,
+
             ]);
 
             flash()->success('User created successfully!');
@@ -84,17 +101,36 @@ class UserController extends Controller
     {
         try {
             // Validate request
-            $validated = $request->validate([
+            $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-                'role' => ['required', Rule::in(['Admin', 'User'])],
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|string|min:8|max:255',
+                'address' => 'required|string|max:100',
+                'role' => 'required|string|max:5',
+                'contact_number' => 'required|string|max:15',
+                'birth_date' => 'required',
+                'civil_status' => 'required|string',
+                'gender' => 'required|string',
+                'occupation' => 'required|string',
+                'household_number' => 'required|string',
+                'barangay_id' => 'required|string',
             ]);
 
-            // Update user
-            $user->update([
-                'name' => $validated['name'],
-                'email' => $validated['email'],
-                'role' => $validated['role'],
+            // Create new user with hashed password
+            $user = User::update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'address' => $request->address,
+                'role' => $request->role,
+                'contact_number' => $request->contact_number,
+                'birth_date' => $request->birth_date,
+                'civil_status' => $request->civil_status,
+                'gender' => $request->gender,
+                'occupation' => $request->occupation,
+                'household_number' => $request->household_number,
+                'barangay_id' => $request->barangay_id,
+
             ]);
 
             return to_route('users.index');

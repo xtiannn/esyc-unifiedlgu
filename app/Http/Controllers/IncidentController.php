@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Incident;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class IncidentController extends Controller
 {
@@ -12,7 +13,7 @@ class IncidentController extends Controller
      */
     public function index()
     {
-        $incidents = Incident::all(); // Fetch all users
+        $incidents = Incident::all(); // Fetch all incidents
         return view('incidents.index', compact('incidents'));
     }
 
@@ -21,7 +22,7 @@ class IncidentController extends Controller
      */
     public function create()
     {
-        //
+        return view('incidents.create');
     }
 
     /**
@@ -29,7 +30,29 @@ class IncidentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'incident_type' => 'required|string|max:255',
+            'description' => 'required|string',
+            'media_type' => 'required|in:image,video',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:20480', // 20MB max
+            'location' => 'required|string',
+        ]);
+
+        $mediaPath = null;
+        if ($request->hasFile('media')) {
+            $mediaPath = $request->file('media')->store('incidents', 'public');
+        }
+
+        $incident = Incident::create([
+            'incident_type' => $request->incident_type,
+            'description' => $request->description,
+            'media_type' => $request->media_type,
+            'media_path' => $mediaPath,
+            'location' => $request->location,
+            'reported_by' => auth()->id(),
+        ]);
+
+        return redirect()->route('incident.index')->with('success', 'Incident logged successfully.');
     }
 
     /**
@@ -37,7 +60,7 @@ class IncidentController extends Controller
      */
     public function show(Incident $incident)
     {
-        //
+        return view('incidents.show', compact('incident'));
     }
 
     /**
@@ -45,7 +68,7 @@ class IncidentController extends Controller
      */
     public function edit(Incident $incident)
     {
-        //
+        return view('incidents.edit', compact('incident'));
     }
 
     /**
@@ -53,7 +76,29 @@ class IncidentController extends Controller
      */
     public function update(Request $request, Incident $incident)
     {
-        //
+        $request->validate([
+            'incident_type' => 'required|string|max:255',
+            'description' => 'required|string',
+            'media_type' => 'required|in:image,video',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:20480',
+            'location' => 'required|string',
+        ]);
+
+        if ($request->hasFile('media')) {
+            if ($incident->media_path) {
+                Storage::disk('public')->delete($incident->media_path);
+            }
+            $incident->media_path = $request->file('media')->store('incidents', 'public');
+        }
+
+        $incident->update([
+            'incident_type' => $request->incident_type,
+            'description' => $request->description,
+            'media_type' => $request->media_type,
+            'location' => $request->location,
+        ]);
+
+        return redirect()->route('incident.index')->with('success', 'Incident updated successfully.');
     }
 
     /**
@@ -61,6 +106,15 @@ class IncidentController extends Controller
      */
     public function destroy(Incident $incident)
     {
-        //
+        if ($incident->media_path) {
+            Storage::disk('public')->delete($incident->media_path);
+        }
+        $incident->delete();
+
+        return redirect()->route('incident.index')->with('success', 'Incident deleted successfully.');
     }
+
+
 }
+
+

@@ -1,120 +1,159 @@
-<!-- Blade Template (resources/views/messages/index.blade.php) -->
 <x-app-layout>
-    <div class="container py-4">
-        <h3 class="mb-4">Real-time Messenger</h3>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap-grid.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap-buttons.min.css" rel="stylesheet">
 
-        <!-- Messages Container -->
-        <div class="card shadow-sm">
-            <div class="card-body" style="max-height: 500px; overflow-y: auto;" id="messages-container">
-                <div id="messages">
-                    @foreach ($messages as $msg)
-                        <div class="message mb-3 {{ $msg->sender_id == auth()->id() ? 'sent' : 'received' }}">
-                            <div class="message-content p-3 rounded">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong>{{ $msg->sender->name }}</strong>
-                                    <small class="text-muted">{{ $msg->created_at->diffForHumans() }}</small>
-                                </div>
-                                <span>{{ $msg->message }}</span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-        <!-- Message Form -->
-        <form id="messageForm" class="mt-4">
-            @csrf
-            <div class="input-group">
-                <select id="receiver_id" class="form-select" required>
-                    <option value="">Select Recipient</option>
-                    @foreach (App\Models\User::where('id', '!=', auth()->id())->get() as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endforeach
-                </select>
-                <input type="text"
-                       id="message"
-                       class="form-control"
-                       placeholder="Type your message..."
-                       required
-                       maxlength="500">
-                <button type="submit" class="btn btn-primary" id="sendBtn">Send</button>
-            </div>
-            <div id="error-message" class="text-danger mt-2" style="display: none;"></div>
-        </form>
-    </div>
-
-    <!-- Styles -->
     <style>
-        .message.sent { margin-left: 20%; }
-        .message.received { margin-right: 20%; }
-        .message.sent .message-content {
-            background-color: #007bff;
-            color: white;
+        body {
+            margin-top: -50px;
+            font-family: Arial, sans-serif !important;
+            background-color: #f8f9fa !important;
         }
-        .message.received .message-content {
-            background-color: #f8f9fa;
+
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #chat-box {
+            border: 1px solid #ccc !important;
+            border-radius: 10px !important;
+            padding: 10px !important;
+            height: 400px !important;
+            overflow-y: auto !important;
+            background: #fff !important;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            max-width: 75%;
+        }
+
+        .user-message {
+            background: #007bff !important;
+            color: white !important;
+            padding: 10px 15px !important;
+            border-radius: 15px !important;
+            max-width: 70% !important;
+            align-self: flex-end !important;
+            text-align: right !important;
+            margin-left: auto !important;
+        }
+
+        .bot-message {
+            background: #28a745 !important;
+            color: white !important;
+            padding: 10px 15px !important;
+            border-radius: 15px !important;
+            max-width: 70% !important;
+            align-self: flex-start !important;
+            margin-right: auto !important;
+        }
+
+        .input-group {
+            margin-top: 15px;
+        }
+
+        #chat-admin-btn {
+            display: none;
+            margin-top: 10px;
+            background-color: #dc3545;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        #chat-admin-btn:hover {
+            background-color: #c82333;
         }
     </style>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://js.pusher.com/8.0/pusher.min.js"></script>
-    <script src="{{ mix('/js/app.js') }}"></script>
+    <div class="container">
+        <div class="chat-container mt-4">
+            <h4 class="text-center mb-3">LGU Chatbot</h4>
+            <div id="chat-box" class="p-3"></div>
+
+            <div class="input-group">
+                <input type="text" id="user-message" class="form-control" placeholder="Type a message...">
+                <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+            </div>
+
+            <button id="chat-admin-btn" class="btn btn-danger mt-2" onclick="chatWithAdmin()">Chat with Admin</button>
+        </div>
+    </div>
 
     <script>
         $(document).ready(function() {
-            // Auto-scroll to bottom
-            const messagesContainer = $('#messages-container');
-            messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+            // Listen for "Enter" key press in input field
+            $("#user-message").keypress(function(e) {
+                if (e.which === 13) { // 13 is the keycode for Enter
+                    sendMessage();
+                    return false; // Prevents the default form submission
+                }
+            });
+        });
 
-            // Form submission
-            $('#messageForm').submit(function(e) {
-                e.preventDefault();
-                const sendBtn = $('#sendBtn');
-                const errorMessage = $('#error-message');
+        function sendMessage() {
+            let userMessage = $('#user-message').val().trim();
+            if (!userMessage) return;
 
-                sendBtn.prop('disabled', true);
-                errorMessage.hide();
+            $('#chat-box').append('<div class="message user-message">' + userMessage + '</div>');
 
-                $.ajax({
-                    url: '/messages',
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        receiver_id: $('#receiver_id').val(),
-                        message: $('#message').val()
-                    },
-                    success: function(response) {
-                        $('#message').val('');
-                        sendBtn.prop('disabled', false);
-                    },
-                    error: function(xhr) {
-                        errorMessage.text(xhr.responseJSON?.message || 'Failed to send message');
-                        errorMessage.show();
-                        sendBtn.prop('disabled', false);
+            $.ajax({
+                url: '/chat/send',
+                type: 'POST',
+                data: {
+                    message: userMessage,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    let botResponse = response.bot_response;
+                    $('#chat-box').append('<div class="message bot-message">' + botResponse + '</div>');
+
+                    // Show "Chat with Admin" button if bot doesn't understand
+                    if (botResponse ===
+                        "I'm not quite sure I understand. Would you like to chat with an admin for further assistance, or can you try rephrasing your question?"
+                    ) {
+                        $('#chat-admin-btn').show();
+                    } else {
+                        $('#chat-admin-btn').hide();
                     }
-                });
+
+                    // Auto-scroll to bottom
+                    $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                }
             });
 
-            // Real-time message listening
-            Echo.private(`chat.${{{ auth()->id() }}}`)
-                .listen('MessageSent', (e) => {
-                    const isSent = e.message.sender_id === {{ auth()->id() }};
-                    const messageHtml = `
-                        <div class="message mb-3 ${isSent ? 'sent' : 'received'}">
-                            <div class="message-content p-3 rounded">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <strong>${isSent ? 'You' : e.sender_name}</strong>
-                                    <small class="text-muted">just now</small>
-                                </div>
-                                <span>${e.message.message}</span>
-                            </div>
-                        </div>
-                    `;
-                    $('#messages').append(messageHtml);
-                    messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
-                });
-        });
+            $('#user-message').val('');
+        }
+
+        function chatWithAdmin() {
+            $.ajax({
+                url: '/chat/connect-admin',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        alert(response.message);
+                        window.location.href = '/admin/chat/' + response.admin_id; // Redirect to chat page
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        }
     </script>
 </x-app-layout>

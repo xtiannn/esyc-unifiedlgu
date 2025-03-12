@@ -1,4 +1,6 @@
 <x-app-layout>
+    @section('title', 'User Management')
+
     <div class="row">
         <div class="col-md-10">
             <h1>User Management</h1>
@@ -36,21 +38,23 @@
                         <td data-label="Action">
                             <button class="btn btn-primary btn-sm editUserBtn" data-id="{{ $user->id }}"
                                 data-name="{{ $user->name }}" data-email="{{ $user->email }}"
-                                data-role="{{ $user->role }}" data-contact="{{ $user->contact }}"
-                                data-birthdate="{{ $user->birthdate }}" data-civil-status="{{ $user->civil_status }}"
-                                data-gender="{{ $user->gender }}" data-occupation="{{ $user->occupation }}"
-                                data-barangay-id="{{ $user->barangay_id }}" data-address="{{ $user->address }}"
-                                data-bs-toggle="modal" data-bs-target="#editUserModal">
+                                data-role="{{ $user->role }}" data-contact_number="{{ $user->contact_number }}"
+                                data-birth_date="{{ $user->birth_date }}" data-gender="{{ $user->gender }}"
+                                data-civil_status="{{ $user->civil_status }}"
+                                data-occupation="{{ $user->occupation }}" data-barangay_id="{{ $user->barangay_id }}"
+                                data-address="{{ $user->address }}"
+                                data-household_number="{{ $user->household_number }}" data-bs-toggle="modal"
+                                data-bs-target="#editUserModal">
                                 <i class="fa fa-edit"></i>
+
                             </button>
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Your are about to delete user')">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </form>
+
+                            {{-- Reusable Delete Button --}}
+                            @include('components.delete-button', [
+                                'id' => $user->id,
+                                'route' => route('users.destroy', $user->id),
+                                'itemName' => $user->name,
+                            ])
                         </td>
                     </tr>
                 @endforeach

@@ -2,91 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\MessageSent;
-use App\Models\Message;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Message;
+use App\Models\BotResponse;
 
 class MessageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $messages = Message::where('sender_id', Auth::id())
-            ->orWhere('receiver_id', Auth::id())
-            ->with(['sender', 'receiver'])
-            ->orderBy('created_at', 'asc')
-            ->get();
-
+        $messages = Message::latest()->get();
         return view('messages.index', compact('messages'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $request->validate([
-            'receiver_id' => 'required|exists:users,id|not_in:' . Auth::id(),
-            'message' => 'required|string|max:500',
-        ]);
+        $userMessage = strtolower(trim($request->input('message')));
 
+        // Fetch the bot response from database
+        $botResponse = BotResponse::whereRaw('LOWER(user_message) = ?', [$userMessage])->value('bot_response');
+
+        // If no response is found in the database, return a default response
+        if (!$botResponse) {
+            $botResponse = "I'm not quite sure I understand. Would you like to chat with an admin for further assistance, or can you try rephrasing your question?";
+
+        }
+
+        // Save the chat history
         $message = Message::create([
-            'sender_id' => Auth::id(),
-            'receiver_id' => $request->receiver_id,
-            'message' => $request->message,
+            'user_message' => $userMessage,
+            'bot_response' => $botResponse
         ]);
 
-        // Load sender relationship for broadcast
-        $message->load('sender');
-
-        broadcast(new MessageSent($message))->toOthers();
-
-        return response()->json([
-            'success' => true,
-            'message' => $message
-        ]);
+        return response()->json($message);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function connectToAdmin()
     {
-        //
-    }
+        $admin = User::where('role', 'admin')->where('is_online', true)->first();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        if ($admin) {
+            return response()->json([
+                'status' => 'success',
+                'message' => "You are now connected to Admin {$admin->name}.",
+                'admin_id' => $admin->id
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => "No admins are available right now. Please try again later."
+            ]);
+        }
     }
 }

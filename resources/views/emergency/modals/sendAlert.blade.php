@@ -11,36 +11,56 @@
                 <form action="{{ route('emergency.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    <!-- Media Type Dropdown (First) -->
-                    <div class="mb-3">
-                        <label for="media_type" class="form-label">Media Type</label>
-                        <select class="form-control" id="media_type" name="media_type" required>
-                            <option selected disabled>Select Media Type</option>
-                            <option value="image">Image</option>
-                            <option value="video">Video</option>
-                        </select>
+                    <div class="row g-1 mb-3">
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <input type="text"
+                                    class="form-control form-control-sm @error('title') is-invalid @enderror"
+                                    id="title" name="title" value="{{ old('title') }}" placeholder="Alert Title"
+                                    required>
+                                <label for="title">Alert Title</label>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- File Upload (Dynamic) -->
-                    <div class="mb-3" id="media_upload_group" style="display: none;">
-                        <label for="media" class="form-label">Upload Media</label>
-                        <input type="file" class="form-control" id="media" name="media">
-                        <small class="text-muted" id="media_hint" style="font-size: 12px;"></small>
-
+                    <div class="row g-1 mb-3">
+                        <div class="col-md-12">
+                            <div class="form-floating">
+                                <textarea class="form-control form-control-sm @error('message') is-invalid @enderror" id="message" name="message"
+                                    placeholder="Alert Message" style="height: 100px" required>{{ old('message') }}</textarea>
+                                <label for="message">Alert Message</label>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="title" class="form-label">Alert Title</label>
-                        <input type="text" class="form-control" id="title" name="title"
-                            value="{{ old('title') }}" required>
+
+                    <div class="row g-1 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select form-select-sm @error('media_type') is-invalid @enderror"
+                                    id="media_type" name="media_type" required>
+                                    <option value="" disabled {{ old('media_type') ? '' : 'selected' }}>Select...
+                                    </option>
+                                    <option value="image" {{ old('media_type') === 'image' ? 'selected' : '' }}>Image
+                                    </option>
+                                    <option value="video" {{ old('media_type') === 'video' ? 'selected' : '' }}>Video
+                                    </option>
+                                </select>
+                                <label for="media_type">Media Type</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="media_upload_group">
+                            <div class="form-floating">
+                                <input type="file" style="border: 0.5px solid rgb(199, 199, 199);"
+                                    class="form-control form-control-sm @error('media') is-invalid @enderror"
+                                    id="media" name="media">
+                                <label for="media">Upload Media</label>
+                                <small class="text-muted" id="media_hint" style="font-size: 12px;"></small>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Alert Message</label>
-                        <textarea class="form-control" id="message" name="message" rows="3" required>{{ old('message') }}</textarea>
-                    </div>
-
-                    <div class="modal-footer">
+                    <div class="modal-footer mt-2">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fa fa-times-circle"></i> Cancel
                         </button>
@@ -69,6 +89,6 @@
             mediaHint.textContent = "Allowed file types: MP4, AVI, MKV, MOV.";
         }
 
-        mediaUploadGroup.style.display = 'block'; // Show file upload field
+        mediaUploadGroup.style.display = 'block';
     });
 </script>

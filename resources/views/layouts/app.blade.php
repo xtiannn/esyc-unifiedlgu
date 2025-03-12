@@ -8,7 +8,9 @@
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/fontawesome.min.css">
     <link rel ="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <title>System UI Template</title>
+    <title>
+        @section('title') Default Title @show
+    </title>
 
     <!-- Simple bar CSS (for scvrollbar)-->
     <link rel="stylesheet" href="{{ asset('css/simplebar.css') }}">
@@ -98,6 +100,15 @@
 
 <body class="vertical light">
     <div class="wrapper">
+
+        @php
+            use App\Models\Announcement;
+            $announcement = Announcement::latest('created_at')->first();
+        @endphp
+
+        {{-- @include('partials.navBar', ['announcement' => $announcement]) --}}
+
+
         <!-- Navigation Bar -->
         @include('partials.navbar')
         <!-- End Navigation Bar -->
@@ -152,6 +163,48 @@
     <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
     <!-- Bootstrap JS (Required for Modals) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", function() {
+                    let formId = this.getAttribute("data-form-id");
+                    let itemName = this.getAttribute("data-item-name"); // Get item name dynamically
+                    confirmDelete(formId, itemName);
+                });
+            });
+        });
+
+        function confirmDelete(formId, itemName) {
+            Swal.fire({
+                title: "⚠️ Confirmation Required!",
+                text: ` You are about to delete "${itemName}". This action cannot be undone!`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "DELETE",
+                cancelButtonText: "Cancel",
+                reverseButtons: true,
+                background: "#1e1e2f",
+                color: "#fff",
+                customClass: {
+                    popup: "rounded-3 shadow-lg",
+                    title: "fw-bold",
+                    confirmButton: "px-4 py-2",
+                    cancelButton: "px-4 py-2"
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+    </script>
+
 
 </body>
 
