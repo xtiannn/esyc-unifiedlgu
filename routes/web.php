@@ -49,6 +49,24 @@ Route::get('/scholarships', function () {
     return redirect()->route('login');
 })->name('scholarship');
 
+// Routes accessible only by authenticated users
+Route::middleware(['auth'])->group(function () {
+
+    // User-side routes
+    Route::get('/scholarships/user', [ScholarshipController::class, 'users'])->name('scholarship.users');
+    Route::post('/scholarship/apply', [ScholarshipController::class, 'apply'])->name('scholarship.apply');
+
+    // Admin-only routes (Protected by 'admin' middleware)
+    Route::get('/scholarships/admin', [ScholarshipController::class, 'admin'])->name('scholarship.admin');
+
+    Route::prefix('/scholarship/{id}')->group(function () {
+        Route::post('/approve', [ScholarshipController::class, 'approve'])->name('scholarship.approve');
+        Route::post('/reject', [ScholarshipController::class, 'reject'])->name('scholarship.reject');
+        Route::post('/schedule', [ScholarshipController::class, 'schedule'])->name('scholarship.schedule');
+    });
+
+});
+
 // Logout route
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

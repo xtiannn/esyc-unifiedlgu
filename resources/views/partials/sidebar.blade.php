@@ -135,7 +135,7 @@
                     <i class="fa-solid fa-screwdriver-wrench"></i>
                     <span class="ml-3 item-text">Settings</span>
                 </a>
-                <ul class="collapse list-unstyled pl-4 w-100 {{ request()->routeIs('announcements.index') ? 'active' : '' }}"
+                {{-- <ul class="collapse list-unstyled pl-4 w-100 {{ request()->routeIs('announcements.index') ? 'active' : '' }}"
                     id="ddAnnouncements">
                     <li class="nav-item">
                         <a class="nav-link pl-3" href="{{ route('announcements.index') }}">
@@ -143,7 +143,17 @@
                             <span class="ml-1 item-text">Announcements</span>
                         </a>
                     </li>
-                </ul>
+                </ul> --}}
+            </li>
+        </ul>
+
+        <!-- Announcements -->
+        <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('announcements.index') ? 'active' : '' }}">
+            <li class="nav-item w-100">
+                <a class="nav-link" href="{{ route('announcements.index') }}">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <span class="ml-3 item-text">Announcements</span>
+                </a>
             </li>
         </ul>
     </nav>
