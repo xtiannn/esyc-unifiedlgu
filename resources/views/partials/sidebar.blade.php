@@ -7,7 +7,7 @@
         <!-- Logo -->
         <div class="w-100 mb-4 d-flex">
             <a class="navbar-brand mx-auto mt-2 flex-fill text-center"
-                href="{{ Auth::user()->role == 'Admin' ? route('dashboard.admin') : route('dashboard.user') }}">
+                href="{{ Auth::user()->role == 'Admin' ? route('dashboard.admin') : route('dashboard.users') }}">
                 <img src="{{ asset('assets/images/unified-lgu-logo.png') }}" width="45">
                 <div class="brand-title">
                     <br>

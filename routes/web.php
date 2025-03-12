@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RuleBasedChatbotController;
 use App\Http\Controllers\ScholarshipController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
@@ -132,6 +134,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('bot_responses', BotResponseController::class);
     Route::post('/chat/connect-admin', [MessageController::class, 'connectToAdmin']);
 });
+
+
+Route::get('/chatbot', [RuleBasedChatbotController::class, 'chatbot'])->name('chatbot.chatbot');
+Route::post('/chatbot', [ChatbotController::class, 'handle'])->name('chatbot.handle');
+
 
 // Announcements Routes
 Route::middleware(['auth'])->group(function () {
