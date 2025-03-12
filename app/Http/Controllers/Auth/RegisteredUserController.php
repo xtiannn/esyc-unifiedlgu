@@ -44,18 +44,22 @@ class RegisteredUserController extends Controller
             'barangay_id' => ['required', 'string', 'max:50'],
         ]);
 
+        // Check if the user table is empty (first user)
+        $isFirstUser = User::count() === 0;
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'address' => $request->address,
             'contact_number' => $request->contact_number,
-            'birth_date' => $request->birthdate,
+            'birth_date' => $request->birth_date,
             'civil_status' => $request->civil_status,
             'gender' => $request->gender,
             'occupation' => $request->occupation,
             'household_number' => $request->household_number,
             'barangay_id' => $request->barangay_id,
+            'role' => $isFirstUser ? 'Admin' : 'User', // Assign Admin if first user, else User
         ]);
 
         event(new Registered($user));
