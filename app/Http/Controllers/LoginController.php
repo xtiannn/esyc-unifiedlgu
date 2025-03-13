@@ -14,11 +14,11 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            if ($user->role === 'admin') { // only admin users are updated
+            if ($user->role === 'Admin') { // only admin users are updated
                 $user->is_online = true;
                 $user->save();
             }
-            return redirect()->route('admin.dashboard'); // Change this to your admin dashboard route
+            return redirect()->route('dashboard.admin'); // Change this to your admin dashboard route
         }
 
         return back()->withErrors(['email' => 'Invalid credentials']);

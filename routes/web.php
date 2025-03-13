@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Logout route
-// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Authenticated and verified routes
 Route::middleware(['auth', 'verified'])->group(function () {
