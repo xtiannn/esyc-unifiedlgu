@@ -130,7 +130,7 @@
                         <h5 class="mt-2">
                             <h5 class="mt-2">
                                 @php
-                                    if (Auth::user()->scholarships->scholarship_status === 'not_applied') {
+                                    if (Auth::user()->scholarships->scholarship_status === null) {
                                         echo 'Apply for Scholarship';
                                     } else {
                                         echo 'Scholarship ' . Auth::user()->scholarships->scholarship_status;

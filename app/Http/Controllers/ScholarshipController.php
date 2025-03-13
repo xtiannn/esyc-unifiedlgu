@@ -17,17 +17,18 @@ class ScholarshipController extends Controller
      */
     public function admin()
     {
-        $scholarships = Scholarship::with('user')->get();
+        // Fetch all scholarships with user relation
+        $scholarships = Scholarship::with('user')->whereNotNull('scholarship_status')->get();
 
-        // Fetch interview slots
+        // Fetch the interview slot details
         $interviewSlot = InterviewSlot::first();
-        $totalSlots = $interviewSlot?->total_slots ?? 10;
+        $totalSlots = $interviewSlot?->total_slots ?? 100; // Default to 10 if not set
 
-        // Count used slots from scholarships table
+        // Count the number of scholarships with interview status as "interview_scheduled"
         $usedSlots = Scholarship::where('scholarship_status', 'interview_scheduled')->count();
 
-        // Ensure available slots do not go negative
-        $availableSlots = max(($interviewSlot?->available_slots ?? 10) - $usedSlots, 0);
+        // Calculate available slots ensuring it never goes negative
+        $availableSlots = max($totalSlots - $usedSlots, 0);
 
         return view('scholarship.admin', compact('scholarships', 'totalSlots', 'availableSlots', 'usedSlots'));
     }
@@ -125,6 +126,7 @@ class ScholarshipController extends Controller
             $scholarship->update([
                 'scholarship_status' => 'applied',
                 'document_link' => $request->document_link,
+                'application_date' => $scholarship->application_date ?? now(),
             ]);
         } else {
             // Create a new record
@@ -132,6 +134,7 @@ class ScholarshipController extends Controller
                 'user_id' => $userId,
                 'scholarship_status' => 'applied',
                 'document_link' => $request->document_link,
+                'application_date' => now(),
             ]);
         }
 
@@ -141,7 +144,10 @@ class ScholarshipController extends Controller
     public function approve($id)
     {
         $scholarship = Scholarship::findOrFail($id);
-        $scholarship->update(['scholarship_status' => 'approved']);
+        $scholarship->update([
+            'scholarship_status' => 'approved',
+            'application_date' => $scholarship->application_date ?? now(), // Ensure application_date is set
+        ]);
 
         return back()->with('success', 'Scholarship approved successfully!');
     }
@@ -155,7 +161,8 @@ class ScholarshipController extends Controller
         $scholarship = Scholarship::findOrFail($id);
         $scholarship->update([
             'scholarship_status' => 'rejected',
-            'rejection_reason' => $request->rejection_reason, // Store the reason
+            'rejection_reason' => $request->rejection_reason,
+            'application_date' => $scholarship->application_date ?? now(), // Ensure application_date is set
         ]);
 
         return back();
@@ -169,18 +176,18 @@ class ScholarshipController extends Controller
             'interview_location' => 'required|string',
         ]);
 
-
         $scholarship = Scholarship::findOrFail($id);
-
         $scholarship->update([
             'interview_date' => $request->interview_date,
             'interview_time' => $request->interview_time,
             'interview_location' => $request->interview_location,
             'scholarship_status' => 'interview_scheduled',
+            'application_date' => $scholarship->application_date ?? now(), // Ensure application_date is set
         ]);
 
         return back()->with('success', 'Interview scheduled successfully!');
     }
+
 
     public function updateSlots(Request $request)
     {

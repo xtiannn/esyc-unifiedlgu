@@ -11,7 +11,10 @@
         <div class="row w-100">
             <div class="col-md-10">
                 <h5 class="mb-0">
-                    Interview Slots: <span class="text-muted">{{ $availableSlots }}/{{ $totalSlots }} available.</span>
+                    Interview Slots:
+                    <span class="text-muted">
+                        {{ $availableSlots }}/{{ $totalSlots }} available.
+                    </span>
                 </h5>
             </div>
             <div class="col-md-2 text-end">
@@ -21,6 +24,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Update Interview Slots Modal -->
     <div class="modal fade" id="updateSlotsModal" tabindex="-1" aria-labelledby="updateSlotsLabel" aria-hidden="true">
@@ -104,7 +108,7 @@
                                 {{ Str::title(ucfirst(str_replace('_', ' ', $scholarship->scholarship_status))) }}
                             </span>
                         </td>
-                        <td>{{ $scholarship->created_at }}</td>
+                        <td>{{ \Carbon\Carbon::parse($scholarship->application_date)->format('F d, Y') }}</td>
                         <td class="text-center">
                             <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#viewApplication{{ $scholarship->id }}">

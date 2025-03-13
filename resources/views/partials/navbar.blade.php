@@ -103,27 +103,12 @@
                 </span>
             </span>
 
-
-
-
-
-
-
-
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item editUserBtn" href="#" data-bs-toggle="modal"
-                    data-bs-target="#editUserModal" data-id="{{ Auth::user()->id }}"
-                    data-name="{{ Auth::user()->name }}" data-email="{{ Auth::user()->email }}"
-                    data-role="{{ Auth::user()->role }}" data-contact_number="{{ Auth::user()->contact_number }}"
-                    data-birth_date="{{ Auth::user()->birth_date }}" data-gender="{{ Auth::user()->gender }}"
-                    data-civil_status="{{ Auth::user()->civil_status }}"
-                    data-occupation="{{ Auth::user()->occupation }}"
-                    data-barangay_id="{{ Auth::user()->barangay_id }}" data-address="{{ Auth::user()->address }}"
-                    data-household_number="{{ Auth::user()->household_number }}">
+                <a class="dropdown-item editUserBtn" href="{{ route('profile.index') }}">
                     <i class="fe fe-user"></i> Profile
                 </a>
 
-                <a class="dropdown-item" href="#"><i class="fe fe-settings"></i> Settings</a>
+                {{-- <a class="dropdown-item" href="#"><i class="fe fe-settings"></i> Settings</a> --}}
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button class="dropdown-item text-danger" type="submit">
@@ -134,151 +119,8 @@
         </li>
     </ul>
 </nav>
-<!-- Edit User Modal -->
-<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fw-bolder" id="editUserModalLabel" style="font-size: 25px">Edit User</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editUserForm" action="" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="row g-1">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-1">
-                                <input type="text" class="form-control" id="edit_name" name="name" required>
-                                <label for="edit_name">Full Name</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-1">
-                                <input type="email" class="form-control" id="edit_email" name="email" required>
-                                <label for="edit_email">Email Address</label>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row g-1">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-1">
-                                <input type="text" class="form-control" id="edit_address" name="address"
-                                    required>
-                                <label for="edit_address">Address</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-1">
-                                <input type="text" class="form-control" id="edit_contact_number"
-                                    name="contact_number" required>
-                                <label for="edit_contact_number">Contact Number</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-1">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-1">
-                                <input type="date" class="form-control" id="edit_birth_date" name="birth_date"
-                                    required>
-                                <label for="edit_birth_date">Birthdate</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-1">
-                                <select class="form-select" id="edit_civil_status" name="civil_status" required>
-                                    <option value="" disabled>Select...</option>
-                                    <option value="Single">Single</option>
-                                    <option value="Married">Married</option>
-                                    <option value="Divorced">Divorced</option>
-                                    <option value="Widowed">Widowed</option>
-                                </select>
-                                <label for="edit_civil_status">Civil Status</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-1">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="edit_gender" name="gender" required>
-                                    <option value="" disabled>Select...</option>
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
-                                </select>
-                                <label for="edit_gender">Gender</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="edit_occupation" name="occupation">
-                                <label for="edit_occupation">Occupation</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-1 my-1">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select" id="edit_role" name="role" required>
-                                    <option value="" disabled>Select...</option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="User">User</option>
-                                </select>
-                                <label for="edit_role">User Role</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="edit_household_number"
-                                    name="household_number" required>
-                                <label for="edit_household_number">Household Number</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-1">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="edit_barangay_id" name="barangay_id"
-                                    required>
-                                <label for="edit_barangay_id">Barangay ID</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer mt-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="fa fa-times-circle"></i> Cancel
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-edit"></i> Update
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll(".editUserBtn").forEach(button => {
-            button.addEventListener("click", function() {
-                let userId = this.getAttribute("data-id");
-                document.getElementById("editUserForm").action = `/users/${userId}`;
-
-                ["name", "email", "address", "contact_number", "birth_date", "civil_status",
-                    "gender", "occupation", "role", "household_number", "barangay_id"
-                ].forEach(field => {
-                    let input = document.getElementById("edit_" + field);
-                    if (input) input.value = this.getAttribute("data-" + field);
-                });
-            });
-        });
-    });
-
     function updateDateTime() {
         let now = new Date();
         let options = {

@@ -131,21 +131,11 @@
             </p>
 
             <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item dropdown">
-                    <a href="#ddAnnouncements" data-toggle="collapse" aria-expanded="false"
-                        class="dropdown-toggle nav-link">
-                        <i class="fa-solid fa-screwdriver-wrench"></i>
-                        <span class="ml-3 item-text">Settings</span>
+                <li class="nav-item w-100">
+                    <a class="nav-link" href="{{ route('profile.index') }}">
+                        <i class="fa-solid fa-user-cog"></i>
+                        <span class="ml-3 item-text">Profile Settings</span>
                     </a>
-                    {{-- <ul class="collapse list-unstyled pl-4 w-100 {{ request()->routeIs('announcements.index') ? 'active' : '' }}"
-                            id="ddAnnouncements">
-                            <li class="nav-item">
-                                <a class="nav-link pl-3" href="{{ route('announcements.index') }}">
-                                    <i class="fa-solid fa-bullhorn"></i>
-                                    <span class="ml-1 item-text">Announcements</span>
-                                </a>
-                            </li>
-                        </ul> --}}
                 </li>
             </ul>
             <!-- Announcements -->
