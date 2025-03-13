@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\ChatBotController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RuleBasedChatbotController;
 use App\Http\Controllers\ScholarshipController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
@@ -49,12 +52,11 @@ Route::get('/scholarships', function () {
 
 // Routes accessible only by authenticated users
 Route::middleware(['auth'])->group(function () {
-
     // User-side routes
     Route::get('/scholarships/user', [ScholarshipController::class, 'users'])->name('scholarship.users');
     Route::post('/scholarship/apply', [ScholarshipController::class, 'apply'])->name('scholarship.apply');
 
-    // Admin-only routes (Protected by 'admin' middleware)
+    // Admin-only routes
     Route::get('/scholarships/admin', [ScholarshipController::class, 'admin'])->name('scholarship.admin');
 
     Route::prefix('/scholarship/{id}')->group(function () {
@@ -62,11 +64,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/reject', [ScholarshipController::class, 'reject'])->name('scholarship.reject');
         Route::post('/schedule', [ScholarshipController::class, 'schedule'])->name('scholarship.schedule');
     });
-
 });
 
 // Logout route
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Authenticated and verified routes
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -81,7 +82,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/users/scholarship', [ScholarshipController::class, 'users'])->name('scholarship.users');
 });
 
-// Profile routes (accessible to all authenticated users)
+// Profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -104,7 +105,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/incidents/{incident}', [IncidentController::class, 'update'])->name('incident.update');
     Route::delete('/incidents/{incident}', [IncidentController::class, 'destroy'])->name('incident.destroy');
 
-    // Custom route for updating incident status
     Route::post('/incident/{incident}/update-status', [IncidentController::class, 'updateStatus'])
         ->name('incident.updateStatus')
         ->middleware('auth');
@@ -127,13 +127,17 @@ Route::post('/cases', [CasesController::class, 'store'])->name('cases.store');
 Route::put('/cases/{case}', [CasesController::class, 'update'])->name('cases.update');
 Route::delete('/cases/{case}', [CasesController::class, 'destroy'])->name('cases.destroy');
 
-// Audit Log Route (restrict to Admins if needed)
+// Audit Log Route
 Route::get('/auditLog', [AuditLogController::class, 'index'])->name('auditLog.index');
 
-// Messages Routes
+// Messages Routes (Updated to point to chatbot/chat.blade.php)
 Route::middleware('auth')->group(function () {
-    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
-    Route::post('/chat/send', [MessageController::class, 'store']);
+    Route::get('/chat', function () {
+        return view('chatbot.chat'); // Corrected to point to chatbot/chat.blade.php
+    })->name('chat');
+
+    Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
+    Route::post('/chat/connect-admin', [ChatController::class, 'connectAdmin'])->name('chat.connect-admin');
 });
 
 // Support System Routes
@@ -145,12 +149,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/support/{conversation}/assign', [SupportController::class, 'assignAgent'])->name('support.assign');
 });
 
-// Bot Response Management Routes
-Route::middleware('auth')->group(function () {
-    Route::resource('bot_responses', BotResponseController::class);
-    Route::post('/chat/connect-admin', [MessageController::class, 'connectToAdmin']);
-});
-
 // Announcements Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
@@ -160,7 +158,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
     Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 
-    // Fetch latest announcements as JSON
     Route::get('/announcements/fetch', function () {
         $announcements = Announcement::latest()->limit(5)->get();
         return response()->json([
