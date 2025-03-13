@@ -25,11 +25,11 @@
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table table-custom">
-            <thead>
+        <table class="table datatable table-bordered table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Media</th>
+                    <th class="text-center" scope="col">#</th>
+                    <th class="text-center" scope="col">Media</th>
                     <th scope="col">Title</th>
                     <th scope="col">Message</th>
                     <th scope="col">Created By</th>
@@ -39,8 +39,8 @@
             <tbody>
                 @forelse ($emergencies as $alert)
                     <tr>
-                        <td data-label="#">{{ $loop->iteration }}.</td>
-                        <td data-label="Media" class="media-cell">
+                        <td class="text-center" data-label="#">{{ $loop->iteration }}.</td>
+                        <td class="text-center" data-label="Media" class="media-cell">
                             @if ($alert->media_type === 'Image')
                                 <a href="{{ asset('storage/' . $alert->media_path) }}" target="_blank">
                                     <img src="{{ asset('storage/' . $alert->media_path) }}" alt="Media"

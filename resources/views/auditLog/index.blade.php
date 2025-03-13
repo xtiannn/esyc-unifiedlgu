@@ -7,10 +7,10 @@
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table table-custom">
-            <thead>
+        <table class="table datatable table-bordered table-striped table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <th scope="col">#</th>
+                    <th class="text-center" scope="col">#</th>
                     <th scope="col">User</th>
                     <th scope="col">Action</th>
                     <th scope="col">Model</th>
@@ -24,8 +24,8 @@
                 @endphp
                 @forelse ($auditLogs as $log)
                     <tr>
-                        <td>{{ ++$count }}.</td>
-                        <td>{{ $log->user->name ?? 'Unknown' }}</td>
+                        <td class="text-center">{{ ++$count }}.</td>
+                        <td>{{ Str::title($log->user->name ?? 'Unknown') }}</td>
                         <td>{{ $log->action }}</td>
                         <td>{{ $log->model }}</td>
                         <td>{{ $log->description }}</td>

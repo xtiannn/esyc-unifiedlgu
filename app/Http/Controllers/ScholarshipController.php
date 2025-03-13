@@ -7,6 +7,8 @@ use App\Http\Requests\UpdateScholarshipRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\InterviewSlot;
+
 
 class ScholarshipController extends Controller
 {
@@ -16,8 +18,21 @@ class ScholarshipController extends Controller
     public function admin()
     {
         $scholarships = Scholarship::with('user')->get();
-        return view('scholarship.admin', compact('scholarships'));
+
+        // Fetch interview slots
+        $interviewSlot = InterviewSlot::first();
+        $totalSlots = $interviewSlot?->total_slots ?? 10;
+
+        // Count used slots from scholarships table
+        $usedSlots = Scholarship::where('scholarship_status', 'interview_scheduled')->count();
+
+        // Ensure available slots do not go negative
+        $availableSlots = max(($interviewSlot?->available_slots ?? 10) - $usedSlots, 0);
+
+        return view('scholarship.admin', compact('scholarships', 'totalSlots', 'availableSlots', 'usedSlots'));
     }
+
+
 
     public function users()
     {
@@ -25,6 +40,25 @@ class ScholarshipController extends Controller
         $hasApplied = Scholarship::where('user_id', $userId)->first();
         return view('scholarship.users', compact('hasApplied'));
     }
+
+
+
+    public function index()
+    {
+        // Fetch total interview slots (from database)
+        $totalSlots = InterviewSlot::first()?->total_slots ?? 10;
+
+        // Count used slots
+        $usedSlots = Scholarship::where('scholarship_status', 'interview_scheduled')->count();
+
+        // Calculate available slots
+        $availableSlots = max($totalSlots - $usedSlots, 0); // Prevent negative values
+
+        $scholarships = Scholarship::with('user')->get();
+
+        return view('admin.scholarships.index', compact('scholarships', 'totalSlots', 'availableSlots'));
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -148,5 +182,19 @@ class ScholarshipController extends Controller
         return back()->with('success', 'Interview scheduled successfully!');
     }
 
+    public function updateSlots(Request $request)
+    {
+        $request->validate([
+            'total_slots' => 'required|integer|min:1',
+        ]);
 
+        $slot = InterviewSlot::first();
+        if ($slot) {
+            $slot->update(['total_slots' => $request->total_slots]);
+        } else {
+            InterviewSlot::create(['total_slots' => $request->total_slots]);
+        }
+
+        return redirect()->back()->with('success', 'Interview slots updated successfully.');
+    }
 }

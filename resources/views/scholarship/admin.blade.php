@@ -8,32 +8,88 @@
     </div>
 
     <div class="alert alert-info d-flex align-items-center" role="alert">
-        <div>
-            <h5 class="mb-0">Interview Slots: <span class="text-muted">4/10 available.</span></h5>
+        <div class="row w-100">
+            <div class="col-md-10">
+                <h5 class="mb-0">
+                    Interview Slots: <span class="text-muted">{{ $availableSlots }}/{{ $totalSlots }} available.</span>
+                </h5>
+            </div>
+            <div class="col-md-2 text-end">
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateSlotsModal">
+                    <i class="fas fa-edit"></i> Update Slots
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- Update Interview Slots Modal -->
+    <div class="modal fade" id="updateSlotsModal" tabindex="-1" aria-labelledby="updateSlotsLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fw-bolder" id="updateSlotsLabel" style="font-size: 25px">
+                        Update Interview Slots
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('update.slots') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="fw-bold mb-3">Current Slot Information</h5>
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control form-control-sm"
+                                        value="{{ $availableSlots }}/{{ $totalSlots }} available" disabled>
+                                    <label>Available Slots</label>
+                                </div>
+
+                                <h5 class="fw-bold mb-3 mt-3">Update Slots</h5>
+                                <div class="form-floating mb-2">
+                                    <input type="number" class="form-control form-control-sm" name="total_slots"
+                                        value="{{ $totalSlots }}" min="1" required>
+                                    <label>New Total Slots</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer mt-2">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <div class="table-responsive">
-        <table class="table table-custom">
-            <thead>
+        <table class="table datatable table-bordered table-striped table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <th>#</th>
+                    <th class="text-center">#</th>
                     <th>Name</th>
                     <th>Email</th>
-                    <th>Contact</th>
-                    <th>Status</th>
+                    <th class="text-center">Contact</th>
+                    <th class="text-center">Status</th>
                     <th>Application Date</th>
-                    <th>Actions</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($scholarships as $scholarship)
                     <tr>
-                        <td>{{ $scholarship->user->id }}</td>
-                        <td>{{ $scholarship->user->name }}</td>
+                        <td class="text-center">{{ $loop->iteration }}.</td>
+                        <td>{{ Str::title($scholarship->user->name) }}</td>
                         <td>{{ $scholarship->user->email }}</td>
-                        <td>{{ $scholarship->user->contact_number ?? 'N/A' }}</td>
-                        <td>
+                        <td class="text-center">{{ $scholarship->user->contact_number ?? 'N/A' }}</td>
+                        <td class="text-center">
                             @php
                                 $statusColors = [
                                     'not_applied' => 'bg-secondary',
@@ -43,12 +99,13 @@
                                     'rejected' => 'bg-danger',
                                 ];
                             @endphp
-                            <span class="badge {{ $statusColors[$scholarship->scholarship_status] ?? 'bg-secondary' }}">
+                            <span
+                                class="badge {{ $statusColors[$scholarship->scholarship_status] ?? 'bg-secondary' }}">
                                 {{ Str::title(ucfirst(str_replace('_', ' ', $scholarship->scholarship_status))) }}
                             </span>
                         </td>
                         <td>{{ $scholarship->created_at }}</td>
-                        <td>
+                        <td class="text-center">
                             <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#viewApplication{{ $scholarship->id }}">
                                 <i class="fas fa-eye"></i>
@@ -109,7 +166,8 @@
                                                 <ul class="list-group">
                                                     <li class="list-group-item">
                                                         <a href="{{ $scholarship->document_link }}" target="_blank">
-                                                            <i class="fas fa-file-alt me-2"></i> View Submitted Document
+                                                            <i class="fas fa-file-alt me-2"></i> View Submitted
+                                                            Document
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -159,7 +217,8 @@
 
 
                                     <!-- Approve Button -->
-                                    <form action="{{ route('scholarship.approve', $scholarship->id) }}" method="POST">
+                                    <form action="{{ route('scholarship.approve', $scholarship->id) }}"
+                                        method="POST">
                                         @csrf
                                         <button type="submit" class="btn btn-success btn-sm">
                                             <i class="fas fa-check"></i> Approve
@@ -243,15 +302,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Select all "Set Interview" modals
+            // Select all modals and listen for the "hidden.bs.modal" event
             document.querySelectorAll('.modal').forEach(modal => {
                 modal.addEventListener('hidden.bs.modal', function(event) {
-                    if (event.target.id.startsWith('scheduleInterview')) {
-                        location.reload(); // Refresh the page when the interview modal closes
+                    // Refresh the page when specific modals close
+                    if (event.target.id.startsWith('scheduleInterview') || event.target.id
+                        .startsWith('rejectApplication')) {
+                        location.reload();
                     }
                 });
             });
         });
     </script>
+
 
 </x-app-layout>
