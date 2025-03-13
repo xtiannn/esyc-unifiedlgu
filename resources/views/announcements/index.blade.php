@@ -14,26 +14,24 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-custom">
+        <table class="table datatable table-bordered table-striped table-hover">
             <thead class="thead-dark">
                 <tr>
-                    <th>#</th>
+                    <th class="text-center">#</th>
                     <th>Title</th>
                     <th>Message</th>
-                    <th>Role</th>
                     <th>Published At</th>
-                    <th>Actions</th>
+                    <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($announcements as $announcement)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td class="text-center">{{ $loop->iteration }}.</td>
                         <td>{{ $announcement->title }}</td>
                         <td>{{ Str::limit($announcement->message, 50) }}</td>
-                        <td>{{ ucfirst($announcement->role) }}</td>
                         <td>{{ $announcement->created_at->format('M d, Y h:i A') }}</td>
-                        <td>
+                        <td class="text-center">
                             <!-- Edit Button with Data Attributes -->
                             <button class="btn btn-primary btn-sm edit-btn" data-id="{{ $announcement->id }}"
                                 data-title="{{ $announcement->title }}" data-message="{{ $announcement->message }}"

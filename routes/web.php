@@ -58,6 +58,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Admin-only routes
     Route::get('/scholarships/admin', [ScholarshipController::class, 'admin'])->name('scholarship.admin');
+    Route::post('/scholarships/update-slots', [ScholarshipController::class, 'updateSlots'])->name('update.slots');
+
 
     Route::prefix('/scholarship/{id}')->group(function () {
         Route::post('/approve', [ScholarshipController::class, 'approve'])->name('scholarship.approve');
@@ -173,5 +175,11 @@ Route::middleware(['auth'])->group(function () {
     })->name('announcements.fetch');
 });
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index'); // Add this route
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+});
 // Include authentication routes
 require __DIR__ . '/auth.php';

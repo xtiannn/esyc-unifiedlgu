@@ -17,6 +17,7 @@ class Scholarship extends Model
         'interview_time',
         'interview_location',
         'rejection_reason',
+        'application_date'
     ];
 
 

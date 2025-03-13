@@ -2,7 +2,7 @@
     @section('title', 'User Management')
 
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-10 mb-3">
             <h1>User Management</h1>
         </div>
         <div class="col-md-2">
@@ -14,28 +14,28 @@
         </div>
     </div>
     <div class="table-responsive">
-        <table class="table table-custom">
-            <thead>
+        <table class="table datatable table-bordered table-striped table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <th scope="col">#</th>
+                    <th class="text-center" scope="col">#</th>
                     <th scope="col">Name</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Role</th>
-                    <th scope="col">Date Created</th>
-                    <th scope="col">Actions</th>
+                    <th class="text-center" scope="col">Role</th>
+                    <th class="text-center" scope="col">Date Created</th>
+                    <th class="text-center" scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($users as $user)
                     <tr>
-                        <td data-label="#">{{ $loop->iteration }}.</td>
-                        <td data-label="Name">{{ $user->name }}</td>
+                        <td class="text-center" data-label="#">{{ $loop->iteration }}.</td>
+                        <td data-label="Name">{{ Str::title($user->name) }}</td>
                         <td data-label="Email">{{ $user->email }}</td>
-                        <td data-label="Role">{{ $user->role }}</td>
-                        <td data-label="DateCreated">
+                        <td class="text-center" data-label="Role">{{ $user->role }}</td>
+                        <td class="text-center" data-label="DateCreated">
                             {{ $user->created_at ? $user->created_at->format('F d, Y') : 'N/A' }}
                         </td>
-                        <td data-label="Action">
+                        <td class="text-center" data-label="Action">
                             <button class="btn btn-primary btn-sm editUserBtn" data-id="{{ $user->id }}"
                                 data-name="{{ $user->name }}" data-email="{{ $user->email }}"
                                 data-role="{{ $user->role }}" data-contact_number="{{ $user->contact_number }}"
@@ -46,7 +46,6 @@
                                 data-household_number="{{ $user->household_number }}" data-bs-toggle="modal"
                                 data-bs-target="#editUserModal">
                                 <i class="fa fa-edit"></i>
-
                             </button>
 
                             {{-- Reusable Delete Button --}}
@@ -62,24 +61,7 @@
         </table>
     </div>
 
-    <!-- Reusable Pagination -->
-    <nav aria-label="Table pagination" class="pagination-custom">
-        <ul class="pagination">
-            <li class="page-item disabled">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo; Prev</span>
-                </a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">Next &raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+
 
     @include('users.modals.addUser')
 

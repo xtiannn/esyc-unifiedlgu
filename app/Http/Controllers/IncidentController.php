@@ -82,6 +82,7 @@ class IncidentController extends Controller
             'media_type' => 'required|in:image,video',
             'media' => 'nullable|file|mimes:jpg,jpeg,png,mp4|max:20480',
             'location' => 'required|string',
+            'status' => 'required|string',
         ]);
 
         if ($request->hasFile('media')) {
@@ -96,6 +97,7 @@ class IncidentController extends Controller
             'description' => $request->description,
             'media_type' => $request->media_type,
             'location' => $request->location,
+            'status' => $request->status,
         ]);
 
         return redirect()->route('incident.index')->with('success', 'Incident updated successfully.');
