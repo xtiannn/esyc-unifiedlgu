@@ -18,9 +18,16 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+<<<<<<< HEAD
+            'role' => 'User',
+        ]);
+
+        // Call other seeders
+=======
             'role' => 'Admin',
         ]);
 
+>>>>>>> 4f884247dfbb8e00b14b1b244ef5083d2e788718
         $this->call(AnnouncementSeeder::class);
         $this->call(NotificationSeeder::class);
     }

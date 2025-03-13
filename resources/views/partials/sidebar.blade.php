@@ -91,15 +91,17 @@
         <!-- Messages -->
         <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('messages.index') ? 'active' : '' }}">
             <li class="nav-item w-100">
-                <a class="nav-link" href="{{ route('messages.index') }}">
+                <a class="nav-link" href="{{ route('chat') }}">
                     <i class="fa-solid fa-message"></i>
                     <span class="ml-3 item-text">Messages</span>
                 </a>
             </li>
         </ul>
 
-        <!-- User Management (Admins Only) -->
+
+
         @if (Auth::check() && Auth::user()->role === 'Admin')
+            <!-- User Management (Admins Only) -->
             <p class="text-muted-nav nav-heading mt-4 mb-1">
                 <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">
                     USER MANAGEMENT
@@ -113,48 +115,40 @@
                     </a>
                 </li>
             </ul>
+            {{-- <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item w-100">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-history"></i>
+                    <span class="ml-3 item-text">Audit Trail</span>
+                </a>
+            </li>
+        </ul> --}}
+
+
+            <!-- Settings -->
+            <p class="text-muted-nav nav-heading mt-4 mb-1">
+                <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
+            </p>
+
             <ul class="navbar-nav flex-fill w-100 mb-2">
                 <li class="nav-item w-100">
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-history"></i>
-                        <span class="ml-3 item-text">Audit Trail</span>
+                    <a class="nav-link" href="{{ route('profile.index') }}">
+                        <i class="fa-solid fa-user-cog"></i>
+                        <span class="ml-3 item-text">Profile Settings</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- Announcements -->
+            <ul
+                class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('announcements.index') ? 'active' : '' }}">
+                <li class="nav-item w-100">
+                    <a class="nav-link" href="{{ route('announcements.index') }}">
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <span class="ml-3 item-text">Announcements</span>
                     </a>
                 </li>
             </ul>
         @endif
 
-        <!-- Settings -->
-        <p class="text-muted-nav nav-heading mt-4 mb-1">
-            <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
-        </p>
-
-        <ul class="navbar-nav flex-fill w-100 mb-2">
-            <li class="nav-item dropdown">
-                <a href="#ddAnnouncements" data-toggle="collapse" aria-expanded="false"
-                    class="dropdown-toggle nav-link">
-                    <i class="fa-solid fa-screwdriver-wrench"></i>
-                    <span class="ml-3 item-text">Settings</span>
-                </a>
-                {{-- <ul class="collapse list-unstyled pl-4 w-100 {{ request()->routeIs('announcements.index') ? 'active' : '' }}"
-                    id="ddAnnouncements">
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" href="{{ route('announcements.index') }}">
-                            <i class="fa-solid fa-bullhorn"></i>
-                            <span class="ml-1 item-text">Announcements</span>
-                        </a>
-                    </li>
-                </ul> --}}
-            </li>
-        </ul>
-
-        <!-- Announcements -->
-        <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('announcements.index') ? 'active' : '' }}">
-            <li class="nav-item w-100">
-                <a class="nav-link" href="{{ route('announcements.index') }}">
-                    <i class="fa-solid fa-bullhorn"></i>
-                    <span class="ml-3 item-text">Announcements</span>
-                </a>
-            </li>
-        </ul>
     </nav>
 </aside>

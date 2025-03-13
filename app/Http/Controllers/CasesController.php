@@ -36,7 +36,6 @@ class CasesController extends Controller
      */
     public function store(Request $request)
     {
-
         try {
             $validated = $request->validate([
                 'case_title' => 'required|string|max:255',
@@ -45,6 +44,7 @@ class CasesController extends Controller
                 'guardian_contact' => 'required|string|max:255',
                 'notes' => 'nullable|string|max:255',
             ]);
+
             $case = Cases::create([
                 'case_title' => $validated['case_title'],
                 'case_type' => $validated['case_type'],
@@ -54,26 +54,22 @@ class CasesController extends Controller
                 'created_by' => Auth::id(),
             ]);
 
-            // dd($case);
-
             // Log creation
-            $user = Auth::user();
-            $username = $user ? $user->name : 'System';
-
             AuditHelper::log(
-                "$username created a new Case record (ID: $case->id, Title: $case->case_title)",
+                "Created a new case (ID: $case->id, Title: {$case->case_title})",
                 'Created',
                 'Cases',
                 $case->id,
                 null,
                 $case->toArray()
             );
-            flash()->success('Your account has been restored.');
-            return redirect()->route('cases.index');
+
+            return redirect()->route('cases.index')->with('success', 'Case created successfully!');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to create case: ' . $e->getMessage()]);
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -108,19 +104,13 @@ class CasesController extends Controller
                 'status' => ['required', Rule::in(['open', 'closed', 'in_progress', 'resolved'])],
             ]);
 
-            $oldValues = $case->toArray(); // Get old values before updating
+            $oldValues = $case->getOriginal(); // Get old values before updating
 
             $case->update($validated);
 
             // Log update
-            $user = Auth::user();
-            $username = $user ? $user->name : 'System';
-
-            $changes = array_diff_assoc($case->toArray(), $oldValues);
-            $changesFormatted = !empty($changes) ? json_encode($changes) : 'No changes detected';
-
             AuditHelper::log(
-                "(ID: $case->id, Title: $case->case_title). Changes: $changesFormatted",
+                "Updated case (ID: $case->id, Title: {$case->case_title})",
                 'Updated',
                 'Cases',
                 $case->id,
@@ -136,6 +126,7 @@ class CasesController extends Controller
 
 
 
+
     /**
      * Remove the specified resource from storage.
      */
@@ -147,23 +138,19 @@ class CasesController extends Controller
             $case->delete();
 
             // Log deletion
-            $user = Auth::user();
-            $username = $user ? $user->name : 'System';
-
             AuditHelper::log(
-                "$username deleted Case (ID: $case->id, Title: $oldValues[case_title])",
+                "Deleted case (ID: $case->id, Title: {$oldValues['case_title']})",
                 'Deleted',
                 'Cases',
                 $case->id,
                 $oldValues,
                 null
             );
-            toastr()->success('Your account has been restored.');
-            flash()->flash('success', 'Your password has been set.');
 
-            return redirect()->route('cases.index');
+            return redirect()->route('cases.index')->with('success', 'Case deleted successfully!');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to delete case: ' . $e->getMessage()]);
         }
     }
+
 }

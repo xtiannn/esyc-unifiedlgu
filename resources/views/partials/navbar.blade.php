@@ -102,9 +102,13 @@
                     </div>
                 </span>
             </span>
+
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item" href="#"><i class="fe fe-user"></i> Profile</a>
-                <a class="dropdown-item" href="#"><i class="fe fe-settings"></i> Settings</a>
+                <a class="dropdown-item editUserBtn" href="{{ route('profile.index') }}">
+                    <i class="fe fe-user"></i> Profile
+                </a>
+
+                {{-- <a class="dropdown-item" href="#"><i class="fe fe-settings"></i> Settings</a> --}}
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button class="dropdown-item text-danger" type="submit">
