@@ -144,7 +144,7 @@
         </div>
         <div class="col-md-3 col-sm-6 mb-4">
             <div class="card text-center shadow-sm border-warning">
-                <a href="{{ route('messages.index') }}">
+                <a href="{{ route('chat') }}">
                     <div class="card-body">
                         <i class="fas fa-comments fa-2x text-info"></i>
                         <h5 class="mt-2">Chat with Bot</h5>

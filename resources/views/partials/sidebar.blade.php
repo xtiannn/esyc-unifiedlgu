@@ -89,7 +89,7 @@
         </ul>
 
         <!-- Messages -->
-        <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('messages.index') ? 'active' : '' }}">
+        <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('chat') ? 'active' : '' }}">
             <li class="nav-item w-100">
                 <a class="nav-link" href="{{ route('chat') }}">
                     <i class="fa-solid fa-message"></i>
