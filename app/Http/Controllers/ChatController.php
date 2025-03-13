@@ -10,7 +10,8 @@ class ChatController extends Controller
     public function send(Request $request)
     {
         $userMessage = $request->input('message');
-        $apiKey = env('GEMINI_API_KEY');
+        // $apiKey = env('GEMINI_API_KEY');
+        $apiKey = AIzaSyCzj3addCyVmVL564cDy7ks3wSGNAzrcVM;
         $endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
         $systemInstruction = "You are the LGU Assistance Chatbot, designed to support users in various aspects of the system, including scholarship applications, incident reporting, emergency alerts, interview scheduling, announcements, and user management. Your primary role is to provide clear, structured, and helpful responses that guide users through different processes within the system. You assist applicants with scholarships, guide citizens on how to report incidents or emergencies, and provide real-time updates on various requests.
