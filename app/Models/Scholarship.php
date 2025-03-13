@@ -12,12 +12,18 @@ class Scholarship extends Model
     protected $fillable = [
         'user_id',
         'scholarship_status',
-        'document_path',
-        'application_status'
+        'document_link',
+        'interview_date',
+        'interview_time',
+        'interview_location',
+        'rejection_reason',
     ];
+
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
+
 }
