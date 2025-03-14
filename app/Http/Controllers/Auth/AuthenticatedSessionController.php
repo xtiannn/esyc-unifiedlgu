@@ -38,7 +38,10 @@ class AuthenticatedSessionController extends Controller
                 ]);
 
                 if ($response->failed()) {
-                    Log::error('API request failed for auto-login', ['email' => $email, 'response' => $response->body()]);
+                    Log::error('API request failed for auto-login', [
+                        'email' => $email,
+                        'response' => $response->body()
+                    ]);
                     return redirect()->route('login')->with('status', 'Unable to verify credentials with external service.');
                 }
 
@@ -65,17 +68,17 @@ class AuthenticatedSessionController extends Controller
                 // Ensure boolean conversion for 'verified'
                 $verified = filter_var($userData['verified'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-                // ✅ Create or update user
+                // Create or update user with API data
                 $user = User::updateOrCreate(
                     ['email' => $email],
                     [
-                        'id' => $userData['id'],
+                        'id' => $userData['id'], // Be cautious with overriding IDs (see note below)
                         'first_name' => $userData['first_name'],
                         'middle_name' => $userData['middle_name'] ?? null,
                         'last_name' => $userData['last_name'],
                         'name' => trim("{$userData['last_name']}, {$userData['first_name']} " . ($userData['middle_name'] ?? '')),
                         'suffix' => $userData['suffix'] ?? null,
-                        'password' => $userData['password'] ?? bcrypt('auto-generated-' . time()),
+                        'password' => $userData['password'] ?? bcrypt('auto-generated-' . time()), // Use hashed password if provided
                         'birth_date' => $userData['birth_date'] ?? null,
                         'sex' => $userData['sex'] ?? null,
                         'mobile' => $userData['mobile'] ?? null,
@@ -108,7 +111,6 @@ class AuthenticatedSessionController extends Controller
                 $request->session()->regenerate();
 
                 $this->MicrosoftAuthenticationLogin();
-
                 return $user->role === 'Admin'
                     ? redirect()->route('dashboard.admin')
                     : redirect()->route('dashboard.users');

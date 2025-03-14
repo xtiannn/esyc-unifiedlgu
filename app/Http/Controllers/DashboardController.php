@@ -16,8 +16,7 @@ class DashboardController extends Controller
         $totalResidents = User::count();
         $totalMale = User::where('sex', 'MALE')->count(); // male residents
         $totalFemale = User::where('sex', 'FEMALE')->count(); // female residents
-        // $totalSingle = User::where('civil_status', 'Single')->count();  // single residents
-
+        $workingResidents = User::where('working', 'yes')->count(); // Working residents
         #CASES COUNTS
         $totalCases = Cases::count();  // Total Cases
         $totalOpenCases = Cases::where('status', 'open')->count(); // open cases counts
@@ -37,7 +36,7 @@ class DashboardController extends Controller
             'totalResidents',
             'totalMale',
             'totalFemale',
-            // 'totalSingle',
+            'workingResidents',
             'totalCases',
             'totalOpenCases',
             'totalInProgress',

@@ -18,7 +18,10 @@ class ScholarshipController extends Controller
     public function admin()
     {
         // Fetch all scholarships with user relation
-        $scholarships = Scholarship::with('user')->whereNotNull('scholarship_status')->get();
+        $scholarships = Scholarship::with('user')
+            ->whereNotNull('scholarship_status')
+            ->where('user_id', '!=', 999)
+            ->get();
 
         // Fetch the interview slot details
         $interviewSlot = InterviewSlot::first();
