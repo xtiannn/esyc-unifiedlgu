@@ -19,7 +19,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 // Override Breeze’s login route
 Route::get('/login', [AuthenticatedSessionController::class, 'createOrAutoLogin']);
-Route::post('/login/store', [AuthenticatedSessionController::class, 'store'])->name('store');
+Route::post('/login/store', [AuthenticatedSessionController::class, 'store']);
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 // Root route: Redirect based on auth status
