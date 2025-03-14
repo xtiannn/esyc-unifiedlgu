@@ -36,7 +36,10 @@ class AuthenticatedSessionController extends Controller
                 ]);
 
                 if ($response->failed()) {
-                    Log::error('API request failed for auto-login', ['email' => $email, 'response' => $response->body()]);
+                    Log::error('API request failed for auto-login', [
+                        'email' => $email,
+                        'response' => $response->body()
+                    ]);
                     return redirect()->route('login')->with('status', 'Unable to verify credentials with external service.');
                 }
 
@@ -50,30 +53,30 @@ class AuthenticatedSessionController extends Controller
                     return redirect()->route('login')->with('status', 'User not found in external service.');
                 }
 
-                // ✅ Validate session_token from API
-                if ($userData['session_token'] !== $sessionToken) {
+                // Validate session_token from API
+                if (!isset($userData['session_token']) || $userData['session_token'] !== $sessionToken) {
                     Log::error('Session token mismatch', [
                         'email' => $email,
                         'provided_session_token' => $sessionToken,
-                        'expected_session_token' => $userData['session_token']
+                        'expected_session_token' => $userData['session_token'] ?? 'not provided'
                     ]);
-                    return redirect()->route('login')->with('status', 'Session token mismatch. Please log in again.');
+                    return redirect()->route('login')->with('status', 'Invalid session token. Please log in again.');
                 }
 
                 // Ensure boolean conversion for 'verified'
                 $verified = filter_var($userData['verified'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-                // ✅ Create or update user
+                // Create or update user with API data
                 $user = User::updateOrCreate(
                     ['email' => $email],
                     [
-                        'id' => $userData['id'],
+                        'id' => $userData['id'], // Be cautious with overriding IDs (see note below)
                         'first_name' => $userData['first_name'],
                         'middle_name' => $userData['middle_name'] ?? null,
                         'last_name' => $userData['last_name'],
                         'name' => trim("{$userData['last_name']}, {$userData['first_name']} " . ($userData['middle_name'] ?? '')),
                         'suffix' => $userData['suffix'] ?? null,
-                        'password' => $userData['password'] ?? bcrypt('auto-generated-' . time()),
+                        'password' => $userData['password'] ?? bcrypt('auto-generated-' . time()), // Use hashed password if provided
                         'birth_date' => $userData['birth_date'] ?? null,
                         'sex' => $userData['sex'] ?? null,
                         'mobile' => $userData['mobile'] ?? null,
@@ -97,24 +100,33 @@ class AuthenticatedSessionController extends Controller
                     ]
                 );
 
-                // ✅ Update Scholarship if needed
-                Scholarship::updateOrCreate(['user_id' => $user->id]);
+                // Update or create Scholarship record
+                Scholarship::updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['scholarship_status' => null] // Add default status if needed
+                );
 
-                // ✅ Log the user in
+                // Log the user in
                 Auth::login($user);
                 Session::put('external_session_token', $sessionToken);
                 $request->session()->regenerate();
 
                 $this->MicrosoftAuthenticationLogin();
-
+                
+                // Redirect based on role
                 return $user->role === 'Admin'
                     ? redirect()->route('dashboard.admin')
                     : redirect()->route('dashboard.users');
             } catch (\Exception $e) {
-                Log::error('External login failed', ['email' => $email, 'error' => $e->getMessage()]);
+                Log::error('External login failed', [
+                    'email' => $email,
+                    'error' => $e->getMessage()
+                ]);
                 return redirect()->route('login')->with('status', 'Failed to log in with external credentials.');
             }
         }
+
+        // Show login page if no credentials provided
         return view('auth.login');
     }
 
@@ -164,8 +176,5 @@ class AuthenticatedSessionController extends Controller
         Scholarship::firstOrCreate([
             'user_id' => $user->id,
         ]);
-
-        // Regenerate session
-        $user->session()->regenerate();
     }
 }
