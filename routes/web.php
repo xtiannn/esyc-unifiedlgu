@@ -49,6 +49,11 @@ Route::get('/scholarships', function () {
     }
     return redirect()->route('login');
 })->name('scholarship');
+// Messages Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('/chat/send', [MessageController::class, 'store']);
+});
 
 // Routes accessible only by authenticated users
 Route::middleware(['auth'])->group(function () {

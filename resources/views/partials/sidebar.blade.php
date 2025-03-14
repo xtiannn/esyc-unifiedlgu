@@ -5,16 +5,16 @@
 
     <nav class="vertnav navbar-side navbar-light">
         <!-- Logo -->
-        <div class="w-100 mb-4 d-flex">
-            <a class="navbar-brand mx-auto mt-2 flex-fill text-center"
+        <div class="w-100 mb-4 d-flex justify-content-center align-items-center flex-column">
+            <a class="navbar-brand text-center"
                 href="{{ Auth::user()->role == 'Admin' ? route('dashboard.admin') : route('dashboard.users') }}">
-                <img src="{{ asset('assets/images/unified-lgu-logo.png') }}" width="45">
-                <div class="brand-title">
-                    <br>
+                <img src="{{ asset('assets/images/unified-lgu-logo.png') }}" width="45" class="d-block mx-auto">
+                <div class="brand-title mt-2">
                     <span>LGU3 - ESYC</span>
                 </div>
             </a>
         </div>
+
 
 
         <!-- Home Button -->
