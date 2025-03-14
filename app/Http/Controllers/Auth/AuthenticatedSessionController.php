@@ -101,9 +101,8 @@ class AuthenticatedSessionController extends Controller
                 );
 
                 // Update or create Scholarship record
-                Scholarship::updateOrCreate(
-                    ['user_id' => $user->id],
-                    ['scholarship_status' => null] // Add default status if needed
+                Scholarship::updateOrCreate([
+                    'user_id' => $user->id],
                 );
 
                 // Log the user in
