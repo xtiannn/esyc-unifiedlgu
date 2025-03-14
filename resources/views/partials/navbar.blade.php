@@ -41,12 +41,6 @@
             </div>
         </li>
     </ul>
-
-
-
-
-
-
     <ul class="nav ml-auto">
         <!-- Date & Time Display -->
         <li class="nav-item d-flex align-items-center">
@@ -57,7 +51,7 @@
 
         <!-- Chat Icon -->
         <li class="nav-item">
-            <a class="nav-link text-muted my-2 circle-icon" href="{{ route('messages.index') }}">
+            <a class="nav-link text-muted my-2 circle-icon" href="{{ route('chat') }}">
                 <span class="fe fe-message-circle fe-16"></span>
             </a>
         </li>

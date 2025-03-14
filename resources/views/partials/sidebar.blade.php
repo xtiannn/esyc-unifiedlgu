@@ -103,7 +103,7 @@
             <li class="nav-item w-100">
                 <a class="nav-link" href="{{ route('chat') }}">
                     <i class="fa-solid fa-message"></i>
-                    <span class="ml-3 item-text">Messages</span>
+                    <span class="ml-3 item-text">AI Chat Assistance</span>
                 </a>
             </li>
         </ul>

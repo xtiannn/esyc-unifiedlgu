@@ -1,5 +1,4 @@
 <x-app-layout>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         /* Chat container takes full width of parent */
         .chat-container {
@@ -22,7 +21,6 @@
             letter-spacing: 1px;
         }
 
-        /* Chat box */
         .chat-box {
             background: #f9fafb;
             border: 1px solid #e5e7eb;
@@ -50,7 +48,6 @@
             background: #f9fafb;
         }
 
-        /* Messages */
         .message {
             max-width: 70%;
             padding: 12px 18px;
@@ -81,7 +78,17 @@
             align-self: flex-start;
         }
 
-        /* Typing indicator */
+        .message a {
+            color: #fff;
+            text-decoration: underline;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .message a:hover {
+            color: #e0e0e0;
+        }
+
         .typing-indicator {
             display: none;
             align-self: flex-start;
@@ -116,7 +123,6 @@
             }
         }
 
-        /* Input area */
         .input-area {
             margin-top: 20px;
             display: flex;
@@ -153,7 +159,6 @@
             background: #0056b3;
         }
 
-        /* Admin button */
         .admin-btn {
             width: 100%;
             margin-top: 15px;
@@ -194,30 +199,38 @@
     </div>
 
     <script>
-        $(document).ready(function() {
-            $("#user-message").keypress(function(e) {
-                if (e.which === 13) {
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('user-message');
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' || e.which === 13) {
+                    e.preventDefault();
                     sendMessage();
-                    return false;
                 }
             });
         });
 
+        function parseLinks(text) {
+            // Convert [Text](URL) to <a href="URL">Text</a>
+            return text.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
+        }
+
         function sendMessage() {
-            let userMessage = $('#user-message').val().trim();
+            let userMessage = document.getElementById('user-message').value.trim();
             if (!userMessage) return;
 
-            $('#chat-box').append(`
-                <div class="message user">${userMessage}</div>
-            `);
+            let chatBox = document.getElementById('chat-box');
+            let userDiv = document.createElement('div');
+            userDiv.className = 'message user';
+            userDiv.textContent = userMessage;
+            chatBox.appendChild(userDiv);
 
-            $('#chat-box').append(`
-                <div class="typing-indicator" id="typing">
-                    <span></span><span></span><span></span>
-                </div>
-            `);
-            $('#typing').css('display', 'flex');
-            $('#chat-box')[0].scrollTop = $('#chat-box')[0].scrollHeight;
+            let typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typing';
+            typingDiv.innerHTML = '<span></span><span></span><span></span>';
+            chatBox.appendChild(typingDiv);
+            typingDiv.style.display = 'flex';
+            chatBox.scrollTop = chatBox.scrollHeight;
 
             $.ajax({
                 url: '{{ route('chat.send') }}',
@@ -229,34 +242,36 @@
                     message: userMessage
                 },
                 success: function(response) {
-                    $('#typing').remove();
+                    document.getElementById('typing').remove();
 
                     let botResponse = response.bot_response;
-                    $('#chat-box').append(`
-                        <div class="message bot">${botResponse}</div>
-                    `);
+                    let botDiv = document.createElement('div');
+                    botDiv.className = 'message bot';
+                    botDiv.innerHTML = parseLinks(botResponse); // Parse links
+                    chatBox.appendChild(botDiv);
 
                     if (botResponse.includes("I’m not quite sure I understand") ||
                         botResponse.includes("Would you like to chat with an admin")) {
-                        $('#chat-admin-btn').css('display', 'block');
+                        document.getElementById('chat-admin-btn').style.display = 'block';
                     } else {
-                        $('#chat-admin-btn').css('display', 'none');
+                        document.getElementById('chat-admin-btn').style.display = 'none';
                     }
 
-                    $('#chat-box')[0].scrollTop = $('#chat-box')[0].scrollHeight;
+                    chatBox.scrollTop = chatBox.scrollHeight;
                 },
                 error: function(xhr) {
-                    $('#typing').remove();
+                    document.getElementById('typing').remove();
 
                     console.error('Error:', xhr);
-                    $('#chat-box').append(`
-                        <div class="message error">Oops! Something went wrong. Please try again.</div>
-                    `);
-                    $('#chat-box')[0].scrollTop = $('#chat-box')[0].scrollHeight;
+                    let errorDiv = document.createElement('div');
+                    errorDiv.className = 'message error';
+                    errorDiv.textContent = 'Oops! Something went wrong. Please try again.';
+                    chatBox.appendChild(errorDiv);
+                    chatBox.scrollTop = chatBox.scrollHeight;
                 }
             });
 
-            $('#user-message').val('');
+            document.getElementById('user-message').value = '';
         }
 
         function chatWithAdmin() {
