@@ -22,8 +22,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function createOrAutoLogin(Request $request): View|RedirectResponse
     {
+
         $email = $request->query('email');
         $sessionToken = $request->query('session_token');
+        // dd($sessionToken);
 
         if ($email && $sessionToken) {
             try {
@@ -112,7 +114,7 @@ class AuthenticatedSessionController extends Controller
                     : redirect()->route('dashboard.users');
             } catch (\Exception $e) {
                 Log::error('External login failed', ['email' => $email, 'error' => $e->getMessage()]);
-                return redirect()->route('login')->with('status', 'Failed to log in with external credentials.');
+                return redirect()->route('login')->with('status', 'Failed to log in with external credentials.' . $e->getMessage());
             }
         }
         return view('auth.login');
@@ -164,8 +166,5 @@ class AuthenticatedSessionController extends Controller
         Scholarship::firstOrCreate([
             'user_id' => $user->id,
         ]);
-
-        // Regenerate session
-        $user->session()->regenerate();
     }
 }
