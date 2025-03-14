@@ -23,7 +23,7 @@ class AuthenticatedSessionController extends Controller
     public function createOrAutoLogin(Request $request): View|RedirectResponse
     {
         $email = $request->query('email');
-        $sessionToken = $request->query('amp;session_token');
+        $sessionToken = $request->query('session_token');
 
         if ($email && $sessionToken) {
             try {
