@@ -219,8 +219,8 @@
                                 <label for="document_link" class="form-label fw-bold">Document Link:</label>
                                 <input type="url" name="document_link" id="document_link" class="form-control"
                                     required>
-                                <small class="text-muted">
-                                    * Only Google Drive links are accepted. Make sure the link is publicly accessible or
+                                <small class="text-muted" style="font-size: 12px">
+                                    Only Google Drive links are accepted. Make sure the link is publicly accessible or
                                     set to "Anyone with the link can view."
                                 </small>
                             </div>
