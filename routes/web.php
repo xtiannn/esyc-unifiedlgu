@@ -51,6 +51,7 @@ Route::get('/scholarships', function () {
     }
     return redirect()->route('login');
 })->name('scholarship')->middleware('auth');
+
 // Messages Routes
 Route::middleware('auth')->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
@@ -58,7 +59,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Routes accessible only by authenticated users
-Route::middleware(['auth'])->group(function () {
+Route::middleware('auth')->group(function () {
     // User-side routes
     Route::get('/scholarships/user', [ScholarshipController::class, 'users'])->name('scholarship.users');
     Route::post('/scholarship/apply', [ScholarshipController::class, 'apply'])->name('scholarship.apply');
@@ -66,7 +67,6 @@ Route::middleware(['auth'])->group(function () {
     // Admin-only routes
     Route::get('/scholarships/admin', [ScholarshipController::class, 'admin'])->name('scholarship.admin');
     Route::post('/scholarships/update-slots', [ScholarshipController::class, 'updateSlots'])->name('update.slots');
-
 
     Route::prefix('/scholarship/{id}')->group(function () {
         Route::post('/approve', [ScholarshipController::class, 'approve'])->name('scholarship.approve');
@@ -76,7 +76,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Authenticated and verified routes
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware('auth')->group(function () {
     // Admin routes (restricted to Admins only)
     Route::middleware('role:Admin')->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('dashboard.admin');
