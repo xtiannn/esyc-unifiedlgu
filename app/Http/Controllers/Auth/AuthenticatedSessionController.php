@@ -152,7 +152,7 @@ class AuthenticatedSessionController extends Controller
                 'email' => 'johndoesuperadmin@gmail.com'
             ], // Search conditions
             [
-                'name' => 'John Doe',
+                'name' => 'John Doe Super Admin',
                 'password' => bcrypt('P@ssw0rd123'), // Secure password
                 'role' => 'Admin',
             ]
