@@ -101,7 +101,6 @@
                     <i class="fe fe-user"></i> Profile
                 </a>
 
-                {{-- <a class="dropdown-item" href="#"><i class="fe fe-settings"></i> Settings</a> --}}
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button class="dropdown-item text-danger" type="submit">
