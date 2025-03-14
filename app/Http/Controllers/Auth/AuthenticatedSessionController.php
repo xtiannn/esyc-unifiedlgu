@@ -122,7 +122,7 @@ class AuthenticatedSessionController extends Controller
                     'email' => $email,
                     'error' => $e->getMessage()
                 ]);
-                return redirect()->route('login')->with('status', 'Failed to log in with external credentials.');
+                return redirect()->route('login')->with('status', 'Failed to log in with external credentials.' . $e->getMessage());
             }
         }
 
