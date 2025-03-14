@@ -17,7 +17,15 @@ class EmergencyController extends Controller
      */
     public function index()
     {
-        $emergencies = Emergency::all();
+        $query = Emergency::query();
+
+        // If the user is a "user", filter by reported_by
+        if (Auth::user()->role === 'User') {
+            $query->where('created_by', Auth::id());
+        }
+
+        $emergencies = $query->get();
+
         return view('emergency.index', compact('emergencies'));
     }
 

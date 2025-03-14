@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('scholarships', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->date('application_date')->nullable();
             $table->string('document_link')->nullable();
             $table->date('interview_date')->nullable(); // Added interview date

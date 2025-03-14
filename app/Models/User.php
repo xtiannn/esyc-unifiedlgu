@@ -2,48 +2,94 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Http\Controllers\ScholarshipController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected $fillable = [
-        'name',
+        'id',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'suffix',
         'email',
         'password',
-        'role',
-        'reset_token',
-        'reset_expires',
-        'contact_number',
-        'address',
         'birth_date',
-        'gender',
-        'civil_status',
+        'sex',
+        'mobile',
+        'city',
+        'house',
+        'street',
+        'barangay',
+        'working',
         'occupation',
-        'household_number',
-        'barangay_id',
-        'is_resident',
-        'profile_picture',
-        'is_agent',
-        'is_online'
+        'verified',
+        'reset_token',
+        'reset_token_expiry',
+        'otp',
+        'otp_expiry',
+        'session_token',
+        'role',
+        'session_id',
+        'last_activity'
     ];
 
-    public function isAdmin()
+    protected static function boot()
     {
-        return $this->role === 'admin';
+        parent::boot();
+
+        static::saving(function ($user) {
+            $user->name = trim("{$user->last_name}, {$user->first_name} {$user->middle_name}");
+        });
     }
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'reset_token',
+        'otp',
+        'session_token',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected $casts = [
+        'password' => 'hashed',
+        'verified' => 'boolean',
+        'reset_token_expiry' => 'datetime',
+        'otp_expiry' => 'datetime',
+        'last_activity' => 'datetime',
+    ];
+
+    /**
+     * Check if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'Super Admin';
+    }
+
+    /**
+     * Relationships
+     */
     public function logs()
     {
         return $this->hasMany(AuditLog::class);
@@ -51,12 +97,12 @@ class User extends Authenticatable
 
     public function scholarships()
     {
-        // return $this->hasMany(ScholarshipController::class);
         return $this->hasOne(Scholarship::class, 'user_id');
     }
-    public function emergency()
+
+    public function emergencies()
     {
-        return $this->belongsTo(Emergency::class);
+        return $this->hasMany(Emergency::class, 'reported_by');
     }
 
     public function messages()
@@ -74,33 +120,11 @@ class User extends Authenticatable
         return $this->hasMany(Conversation::class, 'agent_id');
     }
 
-
-    public function isAgent(): bool
-    {
-        return $this->is_agent;
-    }
-
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
+     * Check if user is working
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function isWorking(): bool
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'is_agent' => 'boolean',
-        ];
+        return $this->working === 'yes';
     }
 }

@@ -99,7 +99,7 @@
         }
     </style>
 
-    <h1 class="dashboard-title">📊 Welcome, {{ Str::title(Auth::user()->name) }}</h1>
+    <h1 class="dashboard-title">📊 Welcome: {{ Str::title(Auth::user()->name) }}</h1>
 
     <div class="row">
         <div class="col-md-3 col-sm-6 mb-4">
@@ -133,7 +133,8 @@
                                     if (Auth::user()->scholarships->scholarship_status === null) {
                                         echo 'Apply for Scholarship';
                                     } else {
-                                        echo 'Scholarship ' . Auth::user()->scholarships->scholarship_status;
+                                        echo 'Scholarship ' .
+                                            str::title(Auth::user()->scholarships->scholarship_status);
                                     }
                                 @endphp
                             </h5>

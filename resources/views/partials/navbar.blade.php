@@ -57,10 +57,9 @@
 
         <!-- Chat Icon -->
         <li class="nav-item">
-            <section class="nav-link text-muted my-2 circle-icon" href="#" data-toggle="modal"
-                data-target=".modal-shortcut">
+            <a class="nav-link text-muted my-2 circle-icon" href="{{ route('messages.index') }}">
                 <span class="fe fe-message-circle fe-16"></span>
-            </section>
+            </a>
         </li>
 
         <!-- Notifications -->
@@ -104,7 +103,7 @@
             </span>
 
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item editUserBtn" href="{{ route('profile.index') }}">
+                <a class="dropdown-item editUserBtn" href="https://smartbarangayconnect.com/profile.php">
                     <i class="fe fe-user"></i> Profile
                 </a>
 

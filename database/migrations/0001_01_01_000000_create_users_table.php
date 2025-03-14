@@ -12,23 +12,32 @@ return new class extends Migration {
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('external_id')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('name')->nullable();
+            $table->string('suffix')->nullable();
             $table->string('email', 191)->unique();
-            $table->string('password')->nullable();
-            $table->enum('role', ['User', 'Admin']);
-            $table->string('reset_token')->nullable();
-            $table->dateTime('reset_expires')->nullable();
-            $table->string('contact_number', 20)->nullable();
-            $table->text('address')->nullable();
+            $table->string('password');
             $table->date('birth_date')->nullable();
-            $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
-            $table->enum('civil_status', ['Single', 'Married', 'Widowed', 'Separated', 'Divorced'])->nullable();
+            $table->enum('sex', ['MALE', 'FEMALE', 'OTHER'])->nullable();
+            $table->string('mobile', 20)->nullable();
+            $table->string('city')->nullable();
+            $table->string('house')->nullable();
+            $table->string('street')->nullable();
+            $table->string('barangay')->nullable();
+            $table->enum('working', ['yes', 'no'])->nullable();
             $table->string('occupation')->nullable();
-            $table->string('household_number', 50)->nullable();
-            $table->string('barangay_id', 50)->nullable();
-            $table->boolean('is_resident')->default(true);
-            $table->string('profile_picture')->nullable();
-            $table->boolean('is_online')->default(false);
+            $table->boolean('verified')->default(false);
+            $table->string('reset_token')->nullable();
+            $table->dateTime('reset_token_expiry')->nullable();
+            $table->string('otp', 6)->nullable();
+            $table->dateTime('otp_expiry')->nullable();
+            $table->string('session_token')->nullable();
+            $table->enum('role', ['User', 'Admin', 'Super Admin']);
+            $table->string('session_id')->nullable();
+            $table->dateTime('last_activity')->nullable();
             $table->timestamps();
         });
 

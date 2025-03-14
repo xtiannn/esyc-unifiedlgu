@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Incident;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,7 +14,16 @@ class IncidentController extends Controller
      */
     public function index()
     {
-        $incidents = Incident::all(); // Fetch all incidents
+        $user = Auth::user();
+
+        if ($user->role === 'User') {
+            // If the user role is 'user', filter incidents where report_by = user's ID
+            $incidents = Incident::where('reported_by', $user->id)->get();
+        } else {
+            // If the user is an admin or any other role, fetch all incidents
+            $incidents = Incident::all();
+        }
+
         return view('incidents.index', compact('incidents'));
     }
 

@@ -68,7 +68,7 @@
                 <div class="card-body">
                     <i class="fas fa-user fa-2x text-warning"></i>
                     <h5 class="mt-2">Single Residents</h5>
-                    <h3 class="card-title text-warning">{{ $totalSingle }}</h3>
+                    <h3 class="card-title text-warning">1</h3>
                 </div>
             </div>
         </div>

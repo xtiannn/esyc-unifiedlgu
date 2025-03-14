@@ -3,14 +3,14 @@
 
     <div class="row">
         <div class="col-md-10 mb-3">
-            <h1>User Management</h1>
+            <h1>User List</h1>
         </div>
         <div class="col-md-2">
-            <button type="button" role="button" class="btn btn-success mt-2" data-bs-toggle="modal"
+            {{-- <button type="button" role="button" class="btn btn-success mt-2" data-bs-toggle="modal"
                 data-bs-target="#addUserModal">
                 <i class="fa fa-user-plus mr-2"></i>
                 Add User
-            </button>
+            </button> --}}
         </div>
     </div>
     <div class="table-responsive">
@@ -36,7 +36,7 @@
                             {{ $user->created_at ? $user->created_at->format('F d, Y') : 'N/A' }}
                         </td>
                         <td class="text-center" data-label="Action">
-                            <button class="btn btn-primary btn-sm editUserBtn" data-id="{{ $user->id }}"
+                            {{-- <button class="btn btn-primary btn-sm editUserBtn" data-id="{{ $user->id }}"
                                 data-name="{{ $user->name }}" data-email="{{ $user->email }}"
                                 data-role="{{ $user->role }}" data-contact_number="{{ $user->contact_number }}"
                                 data-birth_date="{{ $user->birth_date }}" data-gender="{{ $user->gender }}"
@@ -46,7 +46,7 @@
                                 data-household_number="{{ $user->household_number }}" data-bs-toggle="modal"
                                 data-bs-target="#editUserModal">
                                 <i class="fa fa-edit"></i>
-                            </button>
+                            </button> --}}
 
                             {{-- Reusable Delete Button --}}
                             @include('components.delete-button', [

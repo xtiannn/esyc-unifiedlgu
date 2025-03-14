@@ -16,6 +16,16 @@
             </a>
         </div>
 
+
+        <!-- Home Button -->
+        <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item w-100">
+                <a class="nav-link" href="https://smartbarangayconnect.com/landingmainpage.php">
+                    <i class="fa-solid fa-home"></i>
+                    <span class="ml-3 item-text">Home</span>
+                </a>
+            </li>
+        </ul>
         <!-- Dashboard -->
         <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('dashboard.*') ? 'active' : '' }}">
             <li class="nav-item dropdown">
@@ -115,7 +125,8 @@
                     </a>
                 </li>
             </ul>
-            {{-- <ul class="navbar-nav flex-fill w-100 mb-2">
+        @endif
+        {{-- <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
                 <a class="nav-link" href="#">
                     <i class="fas fa-history"></i>
@@ -125,19 +136,21 @@
         </ul> --}}
 
 
-            <!-- Settings -->
-            <p class="text-muted-nav nav-heading mt-4 mb-1">
-                <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
-            </p>
+        <!-- Settings -->
+        <p class="text-muted-nav nav-heading mt-4 mb-1">
+            <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
+        </p>
 
-            <ul class="navbar-nav flex-fill w-100 mb-2">
-                <li class="nav-item w-100">
-                    <a class="nav-link" href="{{ route('profile.index') }}">
-                        <i class="fa-solid fa-user-cog"></i>
-                        <span class="ml-3 item-text">Profile Settings</span>
-                    </a>
-                </li>
-            </ul>
+        <ul class="navbar-nav flex-fill w-100 mb-2">
+            <li class="nav-item w-100">
+                <a class="nav-link" href="https://smartbarangayconnect.com/profile.php">
+                    <i class="fa-solid fa-user-cog"></i>
+                    <span class="ml-3 item-text">Profile Settings</span>
+                </a>
+            </li>
+        </ul>
+
+        @if (Auth::check() && Auth::user()->role === 'Admin')
             <!-- Announcements -->
             <ul
                 class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('announcements.index') ? 'active' : '' }}">
@@ -149,6 +162,8 @@
                 </li>
             </ul>
         @endif
+
+
 
     </nav>
 </aside>

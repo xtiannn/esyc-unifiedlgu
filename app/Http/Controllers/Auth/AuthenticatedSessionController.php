@@ -9,7 +9,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Http;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -26,49 +28,113 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        // Get email & password from request
+        $credentials = $request->only('email', 'password');
 
+        // Validate credentials with local database first
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
+
+        if ($user && Hash::check($credentials['password'], $user->password)) {
+            // If user exists and password is correct, authenticate locally
+            Auth::login($user);
+        }
+
+        // Proceed with API authentication regardless
+        $response = Http::post('https://smartbarangayconnect.com/api_get_registerlanding.php', $credentials);
+
+        // If API request fails, return an error
+        if ($response->failed()) {
+            return back()->withErrors(['email' => 'API request failed: ' . $response->body()]);
+        }
+
+        // Decode the API response
+        $users = $response->json();
+
+        // Ensure response is an array
+        if (!is_array($users)) {
+            return back()->withErrors(['email' => 'Invalid API response format.']);
+        }
+
+        // Find user by email from API response
+        $userData = collect($users)->firstWhere('email', $credentials['email']);
+
+        if (!$userData) {
+            return back()->withErrors(['email' => 'Invalid credentials.']);
+        }
+
+        // Extract user data safely
+        $external_id = $userData['id'];
+        $email = $userData['email'];
+        $first_name = $userData['first_name'];
+        $last_name = $userData['last_name'];
+        $middle_name = $userData['middle_name'] ?? null;
+        $suffix = $userData['suffix'] ?? null;
+        $birth_date = $userData['birth_date'] ?? null;
+        $sex = $userData['sex'] ?? null;
+        $mobile = $userData['mobile'] ?? null;
+        $city = $userData['city'] ?? null;
+        $house = $userData['house'] ?? null;
+        $street = $userData['street'] ?? null;
+        $barangay = $userData['barangay'] ?? null;
+        $working = $userData['working'] ?? 'no';
+        $occupation = $userData['occupation'] ?? null;
+        $verified = (bool) ($userData['verified'] ?? false);
+        $reset_token = $userData['reset_token'] ?? null;
+        $reset_token_expiry = $userData['reset_token_expiry'] ?? null;
+        $otp = $userData['otp'] ?? null;
+        $otp_expiry = $userData['otp_expiry'] ?? null;
+        $session_token = $userData['session_token'] ?? null;
+        $role = $userData['role'] ?? 'User';
+        $session_id = $userData['session_id'] ?? null;
+        $last_activity = $userData['last_activity'] ?? null;
+
+
+        // Create or update user in the database
+        $user = \App\Models\User::updateOrCreate(
+            ['email' => $email],
+            [
+
+                'first_name' => $first_name,
+                'middle_name' => $middle_name,
+                'last_name' => $last_name,
+                'name' => trim("$last_name, $first_name $middle_name"), // Auto-fill name                'suffix' => $suffix,
+                'password' => bcrypt($credentials['password']), // Store hashed password
+                'birth_date' => $birth_date,
+                'sex' => $sex,
+                'mobile' => $mobile,
+                'city' => $city,
+                'house' => $house,
+                'street' => $street,
+                'barangay' => $barangay,
+                'working' => $working,
+                'occupation' => $occupation,
+                'verified' => $verified,
+                'reset_token' => $reset_token,
+                'reset_token_expiry' => $reset_token_expiry,
+                'otp' => $otp,
+                'otp_expiry' => $otp_expiry,
+                'session_token' => $session_token,
+                'role' => $role,
+                'session_id' => $session_id,
+                'last_activity' => $last_activity,
+            ]
+        );
+
+        // Authenticate the user after API validation
+        Auth::login($user);
+
+        // Regenerate session
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Store user ID in scholarships table (if not already exists)
+        \App\Models\Scholarship::firstOrCreate(['user_id' => $user->id]);
 
 
-        // // Validate the request (email and password)
-        // $request->validate([
-        //     'email' => 'required|email',
-        //     'password' => 'required',
-        // ]);
-
-        // // Fetch user data from the external API
-        // $client = new Client();
-        // $response = $client->get('https://smartbarangayconnect.com/api_get_registerlanding.php');
-        // $users = json_decode($response->getBody(), true);
-
-        // // Find the user by email
-        // $userData = collect($users)->firstWhere('email', $request->email);
-
-        // if (!$userData || !Hash::check($request->password, $userData['password'])) {
-        //     return back()->withErrors([
-        //         'email' => 'The provided credentials do not match our records.',
-        //     ])->onlyInput('email');
-        // }
-
-        // // Manually log in the user
-        // $user = new \stdClass();
-        // $user->id = $userData['id'];
-        // $user->email = $userData['email'];
-        // $user->first_name = $userData['first_name'];
-        // $user->last_name = $userData['last_name'];
-        // $user->role = $userData['role'];
-
-        // // Use a custom guard or session logic if needed
-        // Auth::loginUsingId($user->id, $request->boolean('remember'));
-
-        // // Regenerate session
-        // $request->session()->regenerate();
-
-        // return redirect()->intended(route('dashboard'));
+        return redirect()->intended(route('dashboard'));
     }
+
+
+
 
     /**
      * Destroy an authenticated session.

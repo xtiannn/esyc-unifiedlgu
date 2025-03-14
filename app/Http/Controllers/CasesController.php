@@ -19,7 +19,13 @@ class CasesController extends Controller
     public function index()
     {
 
-        $cases = Cases::all();
+        if (Auth::user()->role === 'User') {
+            $cases = Cases::all()->where('created_by', Auth::id());
+        } else {
+            $cases = Cases::all();
+        }
+
+
         return view('cases.index', compact('cases'));
     }
 
