@@ -101,7 +101,7 @@
                     <i class="fe fe-user"></i> Profile
                 </a>
 
-                <form action="{{ route('logout') }}" method="POST">
+                <form action="{{ route('cluster.logout') }}" method="POST">
                     @csrf
                     <button class="dropdown-item text-danger" type="submit">
                         <i class="fe fe-log-out"></i> Log Out

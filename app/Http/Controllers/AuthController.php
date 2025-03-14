@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();

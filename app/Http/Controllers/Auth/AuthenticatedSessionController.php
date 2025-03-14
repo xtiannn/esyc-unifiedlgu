@@ -147,7 +147,7 @@ class AuthenticatedSessionController extends Controller
 
         Session::forget('external_session_token'); // Clear the external token
 
-        return redirect('/');
+        return redirect()->away('https://smartbarangayconnect.com');
     }
 
     public function MicrosoftAuthenticationLogin()
