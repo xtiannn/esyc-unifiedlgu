@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Scholarship;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -81,6 +82,10 @@ class AuthenticatedSessionController extends Controller
                             'last_activity' => $userData['last_activity'] ?? null,
                         ]
                     );
+
+                    Scholarship::create([
+                        'user_id' => $user->id,
+                    ]);
                 } else {
                     // Update existing user’s session token
                     $user->update(['session_token' => $sessionToken]);
