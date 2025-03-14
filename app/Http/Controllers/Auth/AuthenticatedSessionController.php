@@ -27,96 +27,98 @@ class AuthenticatedSessionController extends Controller
 
         if ($email && $sessionToken) {
             try {
-                // Find the user by email
+                // Fetch user from local database
                 $user = User::where('email', $email)->first();
 
-                if (!$user) {
-                    // If user doesn’t exist, optionally create or fetch from API
-                    $response = Http::post('https://smartbarangayconnect.com/api_get_registerlanding.php', [
-                        'email' => $email,
-                        // No password available in redirect, so we’ll rely on API response
-                    ]);
+                // Fetch user details from external API
+                $response = Http::post('https://smartbarangayconnect.com/api_get_registerlanding.php', [
+                    'email' => $email,
+                ]);
 
-                    if ($response->failed()) {
-                        Log::error('API request failed for auto-login', ['email' => $email, 'response' => $response->body()]);
-                        return redirect()->route('login')->with('status', 'Unable to verify credentials with external service.');
-                    }
-
-                    $users = $response->json();
-                    if (!is_array($users)) {
-                        return redirect()->route('login')->with('status', 'Invalid API response format.');
-                    }
-
-                    $userData = collect($users)->firstWhere('email', $email);
-                    if (!$userData) {
-                        return redirect()->route('login')->with('status', 'User not found in external service.');
-                    }
-
-                    // Create or update user based on API response
-                    $user = User::updateOrCreate(
-                        ['email' => $email],
-                        [
-                            'first_name' => $userData['first_name'],
-                            'middle_name' => $userData['middle_name'] ?? null,
-                            'last_name' => $userData['last_name'],
-                            'name' => trim("{$userData['last_name']}, {$userData['first_name']} {$userData['middle_name']}"),
-                            'suffix' => $userData['suffix'] ?? null,
-                            'password' => bcrypt('auto-generated-' . time()), // Temporary, since no password in redirect
-                            'birth_date' => $userData['birth_date'] ?? null,
-                            'sex' => $userData['sex'] ?? null,
-                            'mobile' => $userData['mobile'] ?? null,
-                            'city' => $userData['city'] ?? null,
-                            'house' => $userData['house'] ?? null,
-                            'street' => $userData['street'] ?? null,
-                            'barangay' => $userData['barangay'] ?? null,
-                            'working' => $userData['working'] ?? 'no',
-                            'occupation' => $userData['occupation'] ?? null,
-                            'verified' => (bool) ($userData['verified'] ?? false),
-                            'reset_token' => $userData['reset_token'] ?? null,
-                            'reset_token_expiry' => $userData['reset_token_expiry'] ?? null,
-                            'otp' => $userData['otp'] ?? null,
-                            'otp_expiry' => $userData['otp_expiry'] ?? null,
-                            'session_token' => $sessionToken, // Use the provided session token
-                            'role' => $userData['role'] ?? 'User',
-                            'session_id' => $userData['session_id'] ?? null,
-                            'last_activity' => $userData['last_activity'] ?? null,
-                        ]
-                    );
-
-                    Scholarship::updateOrCreate([
-                        'user_id' => $user->id,
-                    ]);
-                } else {
-                    // Update existing user’s session token
-                    $user->update(['session_token' => $sessionToken]);
+                if ($response->failed()) {
+                    Log::error('API request failed for auto-login', ['email' => $email, 'response' => $response->body()]);
+                    return redirect()->route('login')->with('status', 'Unable to verify credentials with external service.');
                 }
 
-                // Log the user in
+                $users = $response->json();
+                if (!is_array($users)) {
+                    return redirect()->route('login')->with('status', 'Invalid API response format.');
+                }
+
+                $userData = collect($users)->firstWhere('email', $email);
+                if (!$userData) {
+                    return redirect()->route('login')->with('status', 'User not found in external service.');
+                }
+
+                // ✅ Validate session_token from API
+                if ($userData['session_token'] !== $sessionToken) {
+                    Log::error('Session token mismatch', [
+                        'email' => $email,
+                        'provided_session_token' => $sessionToken,
+                        'expected_session_token' => $userData['session_token']
+                    ]);
+                    return redirect()->route('login')->with('status', 'Session token mismatch. Please log in again.');
+                }
+
+                // Ensure boolean conversion for 'verified'
+                $verified = filter_var($userData['verified'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+                // ✅ Create or update user
+                $user = User::updateOrCreate(
+                    ['email' => $email],
+                    [
+                        'id' => $userData['id'],
+                        'first_name' => $userData['first_name'],
+                        'middle_name' => $userData['middle_name'] ?? null,
+                        'last_name' => $userData['last_name'],
+                        'name' => trim("{$userData['last_name']}, {$userData['first_name']} " . ($userData['middle_name'] ?? '')),
+                        'suffix' => $userData['suffix'] ?? null,
+                        'password' => $userData['password'] ?? bcrypt('auto-generated-' . time()),
+                        'birth_date' => $userData['birth_date'] ?? null,
+                        'sex' => $userData['sex'] ?? null,
+                        'mobile' => $userData['mobile'] ?? null,
+                        'city' => $userData['city'] ?? null,
+                        'house' => $userData['house'] ?? null,
+                        'street' => $userData['street'] ?? null,
+                        'barangay' => $userData['barangay'] ?? null,
+                        'working' => $userData['working'] ?? 'no',
+                        'occupation' => $userData['occupation'] ?? null,
+                        'verified' => $verified,
+                        'reset_token' => $userData['reset_token'] ?? null,
+                        'reset_token_expiry' => $userData['reset_token_expiry'] ?? null,
+                        'otp' => $userData['otp'] ?? null,
+                        'otp_expiry' => $userData['otp_expiry'] ?? null,
+                        'session_token' => $sessionToken,
+                        'role' => $userData['role'] ?? 'User',
+                        'session_id' => $userData['session_id'] ?? null,
+                        'last_activity' => $userData['last_activity'] ?? null,
+                        'profile_pic' => $userData['profile_pic'] ?? null,
+                        'gender' => $userData['gender'] ?? null,
+                    ]
+                );
+
+                // ✅ Update Scholarship if needed
+                Scholarship::updateOrCreate(['user_id' => $user->id]);
+
+                // ✅ Log the user in
                 Auth::login($user);
-
-                // Store the session token in Laravel’s session
                 Session::put('external_session_token', $sessionToken);
-
-                // Regenerate session to prevent fixation
                 $request->session()->regenerate();
 
                 $this->MicrosoftAuthenticationLogin();
 
-                // Redirect based on role
-                if ($user->role === 'Admin') {
-                    return redirect()->route('dashboard.admin');
-                } else {
-                    return redirect()->route('dashboard.users');
-                }
+                return $user->role === 'Admin'
+                    ? redirect()->route('dashboard.admin')
+                    : redirect()->route('dashboard.users');
             } catch (\Exception $e) {
                 Log::error('External login failed', ['email' => $email, 'error' => $e->getMessage()]);
                 return redirect()->route('login')->with('status', 'Failed to log in with external credentials.');
             }
         }
-
-        // Default Breeze login page if no external params
         return view('auth.login');
     }
+
+
 
     /**
      * Handle an incoming authentication request (manual login).
@@ -152,7 +154,7 @@ class AuthenticatedSessionController extends Controller
                 'email' => 'johndoesuperadmin@gmail.com'
             ], // Search conditions
             [
-                'name' => 'John Doe Super Admin',
+                'name' => 'John Doe',
                 'password' => bcrypt('P@ssw0rd123'), // Secure password
                 'role' => 'Admin',
             ]
