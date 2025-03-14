@@ -25,7 +25,6 @@ class AuthenticatedSessionController extends Controller
 
         $email = $request->query('email');
         $sessionToken = $request->query('session_token');
-        // dd($sessionToken);
 
         if ($email && $sessionToken) {
             try {
@@ -119,7 +118,14 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->route('login')->with('status', 'Failed to log in with external credentials.' . $e->getMessage());
             }
         }
-        return view('auth.login');
+
+        // 🔥 If there's NO active session, redirect to external site
+        if (!Session::has('external_session_token')) {
+            return redirect()->away('https://smartbarangayconnect.com');
+        }
+
+        // Default fallback (optional)
+        return redirect()->route('dashboard');
     }
 
 
