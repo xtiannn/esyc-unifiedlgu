@@ -130,6 +130,29 @@ class AuthenticatedSessionController extends Controller
         \App\Models\Scholarship::firstOrCreate(['user_id' => $user->id]);
 
 
+
+
+
+        // Check if an admin exists
+        $adminExists = \App\Models\User::where('role', 'Admin')->exists();
+
+        if (!$adminExists) {
+            // Create admin user
+            $admin = \App\Models\User::create([
+                'email' => 'email@example.com',
+                'password' => bcrypt('P@ssw0rd123'),
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'name' => 'Doe, John', // Auto-fill name
+                'role' => 'Admin',
+                'verified' => true,
+            ]);
+
+            // Insert admin ID into scholarships table
+            \App\Models\Scholarship::firstOrCreate(['user_id' => $admin->id]);
+        }
+
+
         return redirect()->intended(route('dashboard'));
     }
 
