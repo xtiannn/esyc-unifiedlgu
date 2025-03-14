@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RuleBasedChatbotController;
 use App\Http\Controllers\ScholarshipController;
 use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
@@ -16,9 +16,13 @@ use App\Http\Controllers\IncidentController;
 use App\Models\Announcement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BotResponseController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AnnouncementController;
+
+
+// Override Breeze’s login route
+Route::get('/login', [AuthenticatedSessionController::class, 'createOrAutoLogin'])->name('login');
+Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('store');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 // Root route: Redirect based on auth status
 Route::get('/', function () {
@@ -28,7 +32,7 @@ Route::get('/', function () {
             : redirect()->route('dashboard.users');
     }
     return redirect()->route('login');
-});
+})->middleware('auth');
 
 // Main dashboard entry point with role-based redirection
 Route::get('/dashboard', function () {
@@ -38,7 +42,7 @@ Route::get('/dashboard', function () {
             : redirect()->route('dashboard.users');
     }
     return redirect()->route('login');
-})->name('dashboard');
+})->name('dashboard')->middleware('auth');
 
 // Scholarships entry point with role-based redirection
 Route::get('/scholarships', function () {
@@ -48,7 +52,7 @@ Route::get('/scholarships', function () {
             : redirect()->route('scholarship.users');
     }
     return redirect()->route('login');
-})->name('scholarship');
+})->name('scholarship')->middleware('auth');
 // Messages Routes
 Route::middleware('auth')->group(function () {
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
@@ -72,9 +76,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/schedule', [ScholarshipController::class, 'schedule'])->name('scholarship.schedule');
     });
 });
-
-// Logout route
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Authenticated and verified routes
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -129,13 +130,15 @@ Route::prefix('users')->middleware('web')->group(function () {
 });
 
 // Active Case Management Routes
-Route::get('/cases', [CasesController::class, 'index'])->name('cases.index');
-Route::post('/cases', [CasesController::class, 'store'])->name('cases.store');
-Route::put('/cases/{case}', [CasesController::class, 'update'])->name('cases.update');
-Route::delete('/cases/{case}', [CasesController::class, 'destroy'])->name('cases.destroy');
+Route::middleware('auth')->group(function () {
+    Route::get('/cases', [CasesController::class, 'index'])->name('cases.index');
+    Route::post('/cases', [CasesController::class, 'store'])->name('cases.store');
+    Route::put('/cases/{case}', [CasesController::class, 'update'])->name('cases.update');
+    Route::delete('/cases/{case}', [CasesController::class, 'destroy'])->name('cases.destroy');
+});
 
 // Audit Log Route
-Route::get('/auditLog', [AuditLogController::class, 'index'])->name('auditLog.index');
+Route::get('/auditLog', [AuditLogController::class, 'index'])->name('auditLog.index')->middleware('auth');
 
 // Messages Routes (Updated to point to chatbot/chat.blade.php)
 Route::middleware('auth')->group(function () {
@@ -186,5 +189,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
+
 // Include authentication routes
+
 require __DIR__ . '/auth.php';

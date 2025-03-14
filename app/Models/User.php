@@ -41,7 +41,7 @@ class User extends Authenticatable
         'session_token',
         'role',
         'session_id',
-        'last_activity'
+        'last_activity',
     ];
 
     protected static function boot()

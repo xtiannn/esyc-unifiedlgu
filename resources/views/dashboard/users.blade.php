@@ -129,14 +129,14 @@
                         <i class="fas fa-graduation-cap fa-2x text-success"></i>
                         <h5 class="mt-2">
                             <h5 class="mt-2">
-                                @php
-                                    if (Auth::user()->scholarships->scholarship_status === null) {
-                                        echo 'Apply for Scholarship';
-                                    } else {
-                                        echo 'Scholarship ' .
-                                            str::title(Auth::user()->scholarships->scholarship_status);
-                                    }
-                                @endphp
+                                <div>
+                                    @if (!Auth::user()->scholarships || Auth::user()->scholarships->scholarship_status === null)
+                                        <a href="{{ route('scholarship.apply') }}">Apply for Scholarship</a>
+                                    @else
+                                        Scholarship
+                                        {{ ucwords(strtolower(\Illuminate\Support\Facades\Auth::user()->scholarships->scholarship_status)) }}
+                                    @endif
+                                </div>
                             </h5>
                         </h5>
                     </div>

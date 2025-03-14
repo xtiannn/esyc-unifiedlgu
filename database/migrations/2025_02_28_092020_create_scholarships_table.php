@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->date('interview_date')->nullable(); // Added interview date
             $table->time('interview_time')->nullable(); // Added interview time
             $table->string('interview_location')->nullable();
-            $table->enum('scholarship_status', ['not_applied', 'applied', 'interview_scheduled', 'approved', 'rejected'])->nullable();
+            $table->enum('scholarship_status', ['not_applied', 'applied', 'interview_scheduled', 'approved', 'rejected'])->default('not_applied');
             $table->timestamps();
         });
     }
