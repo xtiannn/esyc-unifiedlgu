@@ -58,7 +58,7 @@
                 <!-- Signup prompt -->
                 <div class="text-center mt-4">
                     <p class="mb-0">Don't have an account?
-                        <a href="https://smartbarangayconnect.com/register.phh"   class="text-primary fw-semibold text-decoration-none">
+                        <a href="https://smartbarangayconnect.com/register.php"   class="text-primary fw-semibold text-decoration-none">
                             Sign up here
                         </a>
                     </p>
