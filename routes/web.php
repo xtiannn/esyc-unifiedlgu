@@ -1,8 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuditLogController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyController;
@@ -17,7 +15,7 @@ use App\Models\Announcement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnnouncementController;
-
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 // Override Breeze’s login route
 Route::get('/login', [AuthenticatedSessionController::class, 'createOrAutoLogin'])->name('login');

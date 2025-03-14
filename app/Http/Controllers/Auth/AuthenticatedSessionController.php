@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+<<<<<<< HEAD
+=======
+use GuzzleHttp\Client;
+>>>>>>> 97d4f307043f6463839f2678c4c910b74d14d866
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -111,8 +115,40 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login');
     }
 
+
+    public function autoLogin(Request $request)
+    {
+        // Validate the required parameters
+        $request->validate([
+            'email' => 'required|email',
+            'session_token' => 'required',
+        ]);
+
+        // Fetch the user by email
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return redirect()->route('login')->withErrors(['email' => 'User not found.']);
+        }
+
+        // TODO: Verify session token logic here (if applicable)
+        // If you have a token validation logic, check it here.
+        // Example: if (!TokenService::isValid($request->session_token)) { return redirect()->route('login'); }
+
+        // Authenticate the user manually
+        Auth::login($user);
+
+        // Redirect to dashboard or intended route
+        return redirect()->route('dashboard'); // Change this to your actual dashboard route
+    }
+
     /**
+<<<<<<< HEAD
      * Handle an incoming authentication request (manual login).
+=======
+     *
+     * Handle an incoming authentication request.
+>>>>>>> 97d4f307043f6463839f2678c4c910b74d14d866
      */
     public function store(LoginRequest $request): RedirectResponse
     {
