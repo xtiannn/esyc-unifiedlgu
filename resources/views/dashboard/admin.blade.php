@@ -66,9 +66,9 @@
         <div class="col-md-3 col-sm-6 mb-4">
             <div class="card text-center shadow-sm border-warning">
                 <div class="card-body">
-                    <i class="fas fa-user fa-2x text-warning"></i>
-                    <h5 class="mt-2">Single Residents</h5>
-                    <h3 class="card-title text-warning">1</h3>
+                    <i class="fas fa-briefcase fa-2x text-warning"></i>
+                    <h5 class="mt-2">Working Residents</h5>
+                    <h3 class="card-title text-warning">{{ $workingResidents }}</h3>
                 </div>
             </div>
         </div>
