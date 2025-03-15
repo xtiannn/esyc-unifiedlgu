@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BotResponseController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+
+Route::get('/auto-login', [AuthenticatedSessionController::class, 'autoLogin'])->name('auto.login');
 
 // Root route: Redirect based on auth status
 Route::get('/', function () {

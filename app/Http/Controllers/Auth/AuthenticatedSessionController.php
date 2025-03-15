@@ -11,9 +11,66 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
+
+
+    public function autoLogin(Request $request)
+    {
+        $email = $request->query('email');
+        $token = $request->query('session_token');
+
+        if (!$email || !$token) {
+            return redirect('/login')->with('error', 'Invalid login link');
+        }
+
+        // Check if user exists
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            // If user doesn't exist, fetch from API
+            $response = Http::post('https://smartbarangayconnect.com/api_get_registerlanding.php', [
+                'email' => $email
+            ]);
+
+            if ($response->failed()) {
+                return redirect('/login')->with('error', 'Failed to fetch user data.');
+            }
+
+            $users = $response->json();
+            $userData = collect($users)->firstWhere('email', $email);
+
+            if (!$userData) {
+                return redirect('/login')->with('error', 'User not found in API.');
+            }
+
+            // Create user in database
+            $user = User::create([
+                'email' => $userData['email'],
+                'first_name' => $userData['first_name'],
+                'last_name' => $userData['last_name'],
+                'name' => trim("{$userData['last_name']}, {$userData['first_name']}"),
+                'password' => bcrypt('default_password'), // You can change this logic
+                'session_token' => $token, // Store the session token
+                'role' => $userData['role'] ?? 'User',
+                'verified' => (bool) ($userData['verified'] ?? false),
+            ]);
+        } else {
+            // Validate session token if user exists
+            if ($user->session_token !== $token) {
+                return redirect('/login')->with('error', 'Invalid session token.');
+            }
+        }
+
+        // Log in the user
+        Auth::login($user);
+
+        return redirect('/dashboard'); // Redirect to dashboard
+    }
+
+
     /**
      * Display the login view.
      */
