@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,66 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
-use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
-
-
-    public function autoLogin(Request $request)
-    {
-        $email = $request->query('email');
-        $token = $request->query('session_token');
-
-        if (!$email || !$token) {
-            return redirect('/login')->with('error', 'Invalid login link');
-        }
-
-        // Check if user exists
-        $user = User::where('email', $email)->first();
-
-        if (!$user) {
-            // If user doesn't exist, fetch from API
-            $response = Http::post('https://smartbarangayconnect.com/api_get_registerlanding.php', [
-                'email' => $email
-            ]);
-
-            if ($response->failed()) {
-                return redirect('/login')->with('error', 'Failed to fetch user data.');
-            }
-
-            $users = $response->json();
-            $userData = collect($users)->firstWhere('email', $email);
-
-            if (!$userData) {
-                return redirect('/login')->with('error', 'User not found in API.');
-            }
-
-            // Create user in database
-            $user = User::create([
-                'email' => $userData['email'],
-                'first_name' => $userData['first_name'],
-                'last_name' => $userData['last_name'],
-                'name' => trim("{$userData['last_name']}, {$userData['first_name']}"),
-                'password' => bcrypt('default_password'), // You can change this logic
-                'session_token' => $token, // Store the session token
-                'role' => $userData['role'] ?? 'User',
-                'verified' => (bool) ($userData['verified'] ?? false),
-            ]);
-        } else {
-            // Validate session token if user exists
-            if ($user->session_token !== $token) {
-                return redirect('/login')->with('error', 'Invalid session token.');
-            }
-        }
-
-        // Log in the user
-        Auth::login($user);
-
-        return redirect('/dashboard'); // Redirect to dashboard
-    }
-
-
     /**
      * Display the login view.
      */
@@ -79,7 +23,35 @@ class AuthenticatedSessionController extends Controller
         return view('auth.login');
     }
 
+
+    public function autoLogin(Request $request)
+    {
+        // Validate the required parameters
+        $request->validate([
+            'email' => 'required|email',
+            'session_token' => 'required',
+        ]);
+
+        // Fetch the user by email
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return redirect()->route('login')->withErrors(['email' => 'User not found.']);
+        }
+
+        // TODO: Verify session token logic here (if applicable)
+        // If you have a token validation logic, check it here.
+        // Example: if (!TokenService::isValid($request->session_token)) { return redirect()->route('login'); }
+
+        // Authenticate the user manually
+        Auth::login($user);
+
+        // Redirect to dashboard or intended route
+        return redirect()->route('dashboard'); // Change this to your actual dashboard route
+    }
+
     /**
+     *
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
