@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -15,7 +16,9 @@ class NotificationSeeder extends Seeder
         if ($users->isEmpty()) {
             $users = collect([
                 User::create([
-                    'name' => 'Test User',
+                    'first_name' => 'Test',
+                    'last_name' => 'User',
+                    'mobile' => '09099980090',
                     'email' => 'test@example.com',
                     'password' => bcrypt('password')
                 ])
