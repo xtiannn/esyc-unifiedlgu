@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Scholarship;
 use App\Http\Requests\StoreScholarshipRequest;
 use App\Http\Requests\UpdateScholarshipRequest;
@@ -8,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterviewSlot;
+use App\Models\ScholarshipRequirement;
 
 
 class ScholarshipController extends Controller
@@ -42,8 +44,11 @@ class ScholarshipController extends Controller
     {
         $userId = auth()->id();
         $hasApplied = Scholarship::where('user_id', $userId)->first();
-        return view('scholarship.users', compact('hasApplied'));
+        $requirements = ScholarshipRequirement::all();  // Fetch all requirements
+
+        return view('scholarship.users', compact('hasApplied', 'requirements'));
     }
+
 
 
 

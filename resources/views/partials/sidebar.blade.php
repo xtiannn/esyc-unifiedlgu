@@ -64,15 +64,52 @@
             </li>
         </ul>
 
+        <!-- Scholarship System -->
+        <ul class="navbar-nav flex-fill w-100 mb-2">
+            @if (auth()->user() && auth()->user()->role == 'Admin')
+                <!-- Dropdown for Admin -->
+                <li class="nav-item dropdown">
+                    <a href="#scholarship_dd" data-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle nav-link">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span class="ml-3 item-text">Scholarship</span>
+                    </a>
+                    <ul class="collapse list-unstyled pl-4 w-100" id="scholarship_dd">
+                        <li class="nav-item w-100">
+                            <a class="nav-link" href="{{ route('scholarship') }}">
+                                <i class="fa-solid fa-edit"></i>
+                                <span class="ml-3 item-text">Applications</span>
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a class="nav-link" href="{{ route('requirements.index') }}">
+                                <i class="fa-solid fa-list-check"></i>
+                                <span class="ml-3 item-text">Requirements</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @else
+                <!-- Regular Anchor for Non-Admin -->
+                <li class="nav-item w-100">
+                    <a class="nav-link" href="{{ route('scholarship') }}">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span class="ml-3 item-text">Scholarship</span>
+                    </a>
+                </li>
+            @endif
+        </ul>
+
+
         <!-- Scholarship -->
-        <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('scholarship.*') ? 'active' : '' }}">
+        {{-- <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('scholarship.*') ? 'active' : '' }}">
             <li class="nav-item w-100">
                 <a class="nav-link" href="{{ route('scholarship') }}">
                     <i class="fa-solid fa-edit"></i>
                     <span class="ml-3 item-text">Scholarship</span>
                 </a>
             </li>
-        </ul>
+        </ul> --}}
 
         <!-- Case Management -->
         <ul class="navbar-nav flex-fill w-100 mb-2">
@@ -110,7 +147,7 @@
 
 
 
-{{--         @if (Auth::check() && Auth::user()->role === 'Admin')
+        {{--         @if (Auth::check() && Auth::user()->role === 'Admin')
             <!-- User Management (Admins Only) -->
             <p class="text-muted-nav nav-heading mt-4 mb-1">
                 <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">

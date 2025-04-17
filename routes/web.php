@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-
+use App\Http\Controllers\ScholarshipRequirementController;
+use App\Models\ScholarshipRequirement;
 
 // Override Breeze’s login route
 
@@ -83,6 +84,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/scholarships/admin', [ScholarshipController::class, 'admin'])->name('scholarship.admin');
     Route::post('/scholarships/update-slots', [ScholarshipController::class, 'updateSlots'])->name('update.slots');
 
+
     Route::prefix('/scholarship/{id}')->group(function () {
         Route::post('/approve', [ScholarshipController::class, 'approve'])->name('scholarship.approve');
         Route::post('/reject', [ScholarshipController::class, 'reject'])->name('scholarship.reject');
@@ -90,12 +92,27 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+
+// Requirements routes
+Route::middleware('auth')->group(function () {
+    Route::get('/requirements', [ScholarshipRequirementController::class, 'index'])->name('requirements.index');
+    Route::get('/requirements/create', [ScholarshipRequirementController::class, 'create'])->name('requirements.create');
+    Route::post('/requirements', [ScholarshipRequirementController::class, 'store'])->name('requirements.store');
+    Route::get('/requirements/{requirement}/edit', [ScholarshipRequirementController::class, 'edit'])->name('requirements.edit');
+    Route::put('/requirements/{requirement}', [ScholarshipRequirementController::class, 'update'])->name('requirements.update');
+    Route::delete('/requirements/{requirement}', [ScholarshipRequirementController::class, 'destroy'])->name('requirements.destroy');
+});
+
+
+
+
 // Authenticated and verified routes
 Route::middleware('auth')->group(function () {
     // Admin routes (restricted to Admins only)
     Route::middleware('role:Admin')->group(function () {
         Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->name('dashboard.admin');
         Route::get('/admin/scholarship', [ScholarshipController::class, 'admin'])->name('scholarship.admin');
+        Route::get('/scholarship/requirements', [ScholarshipController::class, 'showRequirements'])->name('scholarship.requirements');
     });
 
     // User routes (accessible to all authenticated users)
@@ -109,6 +126,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 
 // Emergency Management Routes
 Route::middleware('auth')->group(function () {

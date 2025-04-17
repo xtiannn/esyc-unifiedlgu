@@ -119,15 +119,19 @@
                     </div>
                 </div>
 
-                <p class="mt-4 fs-5 fw-bold text-dark">
-                    Ready to Apply?
-                </p>
+                <p class="mt-4 fs-5 fw-bold text-dark">Ready to Apply?</p>
                 <p class="text-muted fs-5 mb-4">Take the first step towards your scholarship today!</p>
 
-                <button class="btn btn-primary btn-lg px-5 py-3 shadow-sm hover-lift" data-bs-toggle="modal"
-                    data-bs-target="#applyScholarship">
-                    Apply Now
-                </button>
+                <div class="d-flex gap-3">
+                    <!-- New View Requirements Button -->
+                    <button type="button" class="btn btn-info btn-lg px-5 py-3 shadow-sm hover-lift"
+                        data-bs-toggle="modal" data-bs-target="#viewRequirements">
+                        View Requirements
+                    </button>
+
+                    <button class="btn btn-primary btn-lg px-5 py-3 shadow-sm hover-lift" data-bs-toggle="modal"
+                        data-bs-target="#applyScholarship">Apply Scholarship</button>
+                </div>
             </div>
         @endif
     </div>
@@ -183,6 +187,43 @@
         </div>
     </div>
 
+    <!-- Requirements Modal -->
+    <div class="modal fade" id="viewRequirements" tabindex="-1" aria-labelledby="viewRequirementsLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 fw-bold" id="viewRequirementsLabel">Scholarship Requirements</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Loop through scholarship requirements -->
+                        @if ($requirements && count($requirements) > 0)
+                            @foreach ($requirements as $requirement)
+                                <div class="col-12 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control form-control-sm"
+                                            value="{{ $requirement->description }}" disabled>
+                                        <label>{{ $requirement->name }}</label>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="col-12">
+                                <p class="text-muted">No requirements found.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
