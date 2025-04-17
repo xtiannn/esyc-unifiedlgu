@@ -67,10 +67,9 @@
                 <p class="text-muted fs-5 animated fadeInUp delay-1s">
                     Congratulations! You have been awarded the scholarship.
                 </p>
-                <button class="btn btn-success btn-lg px-5 py-3 shadow-sm hover-lift mt-3" data-bs-toggle="modal"
-                    data-bs-target="#scholarshipDetails">
-                    View Scholarship Details
-                </button>
+                <p class="fs-6 text-secondary animated fadeInUp delay-1s">
+                    Keep an eye on your email for next steps and fund release instructions.
+                </p>
             </div>
         @elseif ($hasApplied && $hasApplied->scholarship_status === 'rejected')
             <div class="d-flex flex-column justify-content-center align-items-center animated fadeIn">
@@ -151,7 +150,7 @@
                             <h5 class="fw-bold mb-3">Interview Details</h5>
                             <div class="form-floating mb-2">
                                 <input type="text" class="form-control form-control-sm"
-                                    value="{{ \Carbon\Carbon::parse($hasApplied->interview_date)->format('F d, Y') ?? 'TBD' }}"
+                                    value="{{ optional($hasApplied)->interview_date ? \Carbon\Carbon::parse($hasApplied->interview_date)->format('F d, Y') : 'TBD' }}"
                                     disabled>
                                 <label>Interview Date</label>
                             </div>
@@ -161,7 +160,7 @@
                         <div class="col-12">
                             <div class="form-floating mb-2">
                                 <input type="text" class="form-control form-control-sm"
-                                    value="{{ \Carbon\Carbon::parse($hasApplied->interview_time)->format('h:i A') ?? 'TBD' }}"
+                                    value="{{ optional($hasApplied)->interview_time ? \Carbon\Carbon::parse($hasApplied->interview_time)->format('h:i A') : 'TBD' }}"
                                     disabled>
                                 <label>Interview Time</label>
                             </div>
@@ -213,7 +212,7 @@
                             <!-- Right Column -->
                             <div class="col-md-6">
                                 <label class="form-label fw-bold">Contact Number:</label>
-                                <p class="form-control-plaintext">{{ auth()->user()->contact_number ?? 'N/A' }}</p>
+                                <p class="form-control-plaintext">{{ auth()->user()->mobile ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <label for="document_link" class="form-label fw-bold">Document Link:</label>
@@ -250,12 +249,22 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <!-- Scholarship Name -->
                         <div class="col-12">
                             <h5 class="fw-bold mb-3">Scholarship Information</h5>
                             <div class="form-floating mb-2">
                                 <input type="text" class="form-control form-control-sm"
-                                    value="{{ $hasApplied->scholarship_name ?? 'N/A' }}" disabled>
+                                    value="{{ optional(optional($hasApplied)->user)->first_name
+                                        ? ucwords(
+                                            strtolower(
+                                                optional($hasApplied->user)->first_name .
+                                                    ' ' .
+                                                    optional($hasApplied->user)->middle_name .
+                                                    ' ' .
+                                                    optional($hasApplied->user)->last_name,
+                                            ),
+                                        )
+                                        : 'N/A' }}"
+                                    disabled>
                                 <label>Scholarship Name</label>
                             </div>
                         </div>
@@ -264,7 +273,7 @@
                         <div class="col-12">
                             <div class="form-floating mb-2">
                                 <input type="text" class="form-control form-control-sm"
-                                    value="{{ $hasApplied->scholarship_amount ? '₱' . number_format($hasApplied->scholarship_amount, 2) : 'N/A' }}"
+                                    value="{{ optional($hasApplied)->scholarship_amount ? '₱' . number_format(optional($hasApplied)->scholarship_amount, 2) : 'N/A' }}"
                                     disabled>
                                 <label>Award Amount</label>
                             </div>
@@ -274,7 +283,8 @@
                         <div class="col-12">
                             <div class="form-floating mb-2">
                                 <input type="text" class="form-control form-control-sm"
-                                    value="{{ ucfirst($hasApplied->scholarship_type) ?? 'N/A' }}" disabled>
+                                    value="{{ optional($hasApplied)->scholarship_type ? ucfirst(optional($hasApplied)->scholarship_type) : 'N/A' }}"
+                                    disabled>
                                 <label>Scholarship Type</label>
                             </div>
                         </div>
@@ -292,7 +302,7 @@
                         <div class="col-12">
                             <div class="form-floating mb-2">
                                 <input type="text" class="form-control form-control-sm"
-                                    value="{{ \Carbon\Carbon::parse($hasApplied->approval_date)->format('F d, Y') ?? 'TBD' }}"
+                                    value="{{ $hasApplied && $hasApplied->approval_date ? \Carbon\Carbon::parse($hasApplied->approval_date)->format('F d, Y') : 'TBD' }}"
                                     disabled>
                                 <label>Approval Date</label>
                             </div>

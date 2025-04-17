@@ -1,3 +1,29 @@
+{{-- resources\views\incidents\modals\logIncident.blade.php --}}
+
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+<style>
+    .media-cell {
+        width: 100px;
+        text-align: center;
+    }
+
+    .media-content {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    #map {
+        height: 350px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+    }
+</style>
+
 <!-- Log Incident Modal -->
 <div class="modal fade" id="logIncidentModal" tabindex="-1" aria-labelledby="logIncidentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -62,23 +88,19 @@
 
                         </div>
 
-                        <!-- Right Column: Embedded Google Map -->
+                        <!-- Right Column: Search + Map -->
                         <div class="col-md-6">
-                            <div class="mb-1">
-                                <div class="form-floating">
-                                    <input type="text"
-                                        class="form-control form-control-sm @error('location') is-invalid @enderror"
-                                        id="location" name="location" value="{{ old('location') }}"
-                                        placeholder="Enter Address or Coordinates" required oninput="updateMap()">
-                                    <label for="location">Search Location....</label>
+                            <div class="form-floating">
+
+                                <div id="map" style="height: 350px; border: 1px solid #ccc; border-radius: 10px;">
                                 </div>
+
+                                <input type="hidden" id="lat" name="latitude">
+                                <input type="hidden" id="lng" name="longitude">
                             </div>
-                            <a id="fullMapLink" href="https://www.google.com/maps?q=Philippines" target="_blank">
-                                <iframe id="incidentMap" src="https://www.google.com/maps?q=Philippines&output=embed"
-                                    width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy">
-                                </iframe>
-                            </a>
                         </div>
+
+
                     </div>
 
                     <div class="modal-footer mt-2">
@@ -94,3 +116,103 @@
         </div>
     </div>
 </div>
+
+
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+
+<script>
+    const pasongTamoBounds = [
+        [14.675, 121.036], // South-West corner (Lat, Lng)
+        [14.688, 121.047] // North-East corner (Lat, Lng)
+    ];
+
+    // Create a lat/lng bounds object
+    const bounds = L.latLngBounds(pasongTamoBounds);
+
+    // Initialize the map with the new boundaries
+    const map = L.map('map', {
+        center: [14.681022719649997, 121.04141588677145], // Initial center in Pasong Tamo
+        zoom: 15, // Set a default zoom level
+        maxBounds: bounds, // Restrict map view within these bounds
+        maxBoundsViscosity: 1.0, // Prevent the map from moving out of bounds
+        minZoom: 15, // Set the minimum zoom level (avoid zooming out too far)
+        // maxZoom: 18 // Set the maximum zoom level (if needed, adjust as necessary)
+        attributionControl: false
+    });
+
+    // Tile Layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Handle map click to place/move marker within Pasong Tamo bounds
+    let marker;
+
+    map.on('click', function(e) {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
+
+        // Check if clicked location is within Pasong Tamo bounds
+        if (bounds.contains([lat, lng])) {
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng]).addTo(map);
+            }
+
+            document.getElementById('lat').value = lat;
+            document.getElementById('lng').value = lng;
+        } else {
+            alert("Please select a location within Pasong Tamo.");
+        }
+    });
+
+    // Invalidate map size when modal shows (necessary for map resizing on modal open)
+    const modal = document.getElementById('logIncidentModal');
+    modal.addEventListener('shown.bs.modal', function() {
+        setTimeout(() => {
+            map.invalidateSize();
+        }, 800);
+    });
+
+    // Add Geocoder control (search icon on map)
+    L.Control.geocoder({
+            defaultMarkGeocode: false
+        })
+        .on('markgeocode', function(e) {
+            const center = e.geocode.center;
+
+            // Check if the geocoded location is within Pasong Tamo bounds
+            if (bounds.contains(center)) {
+                map.setView(center, 15);
+
+                if (marker) {
+                    marker.setLatLng(center);
+                } else {
+                    marker = L.marker(center).addTo(map);
+                }
+
+                document.getElementById('lat').value = center.lat;
+                document.getElementById('lng').value = center.lng;
+            } else {
+                alert("Location is outside the Pasong Tamo area.");
+            }
+        })
+        .addTo(map);
+
+    // Function to check if the location is near the boundaries of Pasong Tamo
+    function isNearby(lat, lon) {
+        const bufferDistance = 0.0005; // Small buffer zone in degrees (around 50 meters)
+        const boundsExtended = L.latLngBounds(
+            [pasongTamoBounds[0][0] - bufferDistance, pasongTamoBounds[0][1] - bufferDistance],
+            [pasongTamoBounds[1][0] + bufferDistance, pasongTamoBounds[1][1] + bufferDistance]
+        );
+        return boundsExtended.contains([lat, lon]);
+    }
+
+    // Remove the search event listeners
+    // No longer needed, as search is handled by geocoder on map
+</script>

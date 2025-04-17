@@ -9,10 +9,23 @@ class Notification extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'message', 'type', 'is_read'];
+    protected $fillable = [
+        'user_id',
+        'incident_id',
+        'emergency_id',
+        'title',
+        'message',
+        'type',
+        'is_read'
+    ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function incident()
+    {
+        return $this->belongsTo(Incident::class, 'incident_id');
     }
 }

@@ -92,7 +92,7 @@
                         <td class="text-center">{{ $loop->iteration }}.</td>
                         <td>{{ Str::title($scholarship->user->name) }}</td>
                         <td>{{ $scholarship->user->email }}</td>
-                        <td class="text-center">{{ $scholarship->user->contact_number ?? 'N/A' }}</td>
+                        <td class="text-center">{{ $scholarship->user->mobile ?? 'N/A' }}</td>
                         <td class="text-center">
                             @php
                                 $statusColors = [
@@ -147,7 +147,7 @@
                                             </div>
                                             <div class="form-floating mb-2">
                                                 <input type="text" class="form-control form-control-sm"
-                                                    value="{{ $scholarship->user->contact_number ?? 'N/A' }}" disabled>
+                                                    value="{{ $scholarship->user->mobile ?? 'N/A' }}" disabled>
                                                 <label>Contact</label>
                                             </div>
                                             <div class="form-floating mb-2">

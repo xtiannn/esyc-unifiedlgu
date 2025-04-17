@@ -13,15 +13,17 @@ return new class extends Migration {
         Schema::create('incident_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('reported_by');
+            $table->string('contact_number');
             $table->string('incident_type', 100);
             $table->text('description');
             $table->string('media_type', 20)->nullable();
             $table->string('media_path', 255)->nullable();
             $table->enum('status', ['pending', 'resolved', 'closed'])->default('pending');
             $table->string('location', 255)->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();  // Store latitude
+            $table->decimal('longitude', 10, 7)->nullable(); // Store longitude
             $table->dateTime('incident_date')->default(now());
             $table->timestamps();
-
 
             $table->foreign('reported_by')->references('id')->on('users')->onDelete('cascade');
         });

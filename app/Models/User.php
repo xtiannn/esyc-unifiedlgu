@@ -120,6 +120,11 @@ class User extends Authenticatable
         return $this->hasMany(Conversation::class, 'agent_id');
     }
 
+    public function getNameAttribute()
+    {
+        return ucfirst($this->first_name) . ' ' . ucfirst($this->middle_name) . ' ' . ucfirst($this->last_name);
+    }
+
     /**
      * Check if user is working
      */

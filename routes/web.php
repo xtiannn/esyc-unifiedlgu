@@ -11,16 +11,31 @@ use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CasesController;
 use App\Http\Controllers\IncidentController;
+use App\Http\Controllers\NotificationController;
 use App\Models\Announcement;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
+
 // Override Breeze’s login route
-Route::get('/login', [AuthenticatedSessionController::class, 'createOrAutoLogin'])->name('login');
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('store');
+
+// Route::get('/login', [AuthenticatedSessionController::class, 'createOrAutoLogin'])->name('login');
+// Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('store');
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('cluster.logout');
+
+
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', function () {
+        return view('auth.login'); // Adjust if needed
+    })->name('login');
+});
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+});
 
 // Root route: Redirect based on auth status
 Route::get('/', function () {
@@ -105,9 +120,11 @@ Route::middleware('auth')->group(function () {
 
 // Incident Logs Routes
 Route::middleware('auth')->group(function () {
+    Route::get('/incident/{id}/data', [IncidentController::class, 'getIncidentData'])->name('incident.data');
     Route::get('/incidents', [IncidentController::class, 'index'])->name('incident.index');
     Route::post('/incidents', [IncidentController::class, 'store'])->name('incident.store');
-    Route::get('/incidents/{incident}', [IncidentController::class, 'show'])->name('incident.show');
+    Route::post('/incident/update-status/{id}', [IncidentController::class, 'updateStatus'])->name('incident.updateStatus');
+    Route::get('/incidents/{id}', [IncidentController::class, 'show'])->name('incident.show');
     Route::put('/incidents/{incident}', [IncidentController::class, 'update'])->name('incident.update');
     Route::delete('/incidents/{incident}', [IncidentController::class, 'destroy'])->name('incident.destroy');
 
@@ -189,5 +206,16 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Include authentication routes
+
+
+
+Route::get('/notifications/fetch', [NotificationController::class, 'fetch'])->name('notifications.fetch');
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead']);
+Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
+// Route::get('/notifications/{id}', [NotificationController::class, 'show']);
+Route::get('/notifications/{id}/details', [NotificationController::class, 'getDetails'])->name('notifications.details');
+
 
 require __DIR__ . '/auth.php';
