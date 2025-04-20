@@ -2,7 +2,6 @@
     <a href="#" class="btn collapseSidebar toggle-btn d-lg-none text-muted ml-2 mt-3" data-toggle="toggle">
         <i class="fe fe-x"><span class="sr-only"></span></i>
     </a>
-
     <nav class="vertnav navbar-side navbar-light">
         <!-- Logo -->
         <div class="w-100 mb-4 d-flex justify-content-center align-items-center flex-column">
@@ -14,8 +13,6 @@
                 </div>
             </a>
         </div>
-
-
 
         <!-- Home Button -->
         <ul class="navbar-nav flex-fill w-100 mb-2">
@@ -100,17 +97,6 @@
             @endif
         </ul>
 
-
-        <!-- Scholarship -->
-        {{-- <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('scholarship.*') ? 'active' : '' }}">
-            <li class="nav-item w-100">
-                <a class="nav-link" href="{{ route('scholarship') }}">
-                    <i class="fa-solid fa-edit"></i>
-                    <span class="ml-3 item-text">Scholarship</span>
-                </a>
-            </li>
-        </ul> --}}
-
         <!-- Case Management -->
         <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
@@ -145,34 +131,6 @@
             </li>
         </ul>
 
-
-
-        {{--         @if (Auth::check() && Auth::user()->role === 'Admin')
-            <!-- User Management (Admins Only) -->
-            <p class="text-muted-nav nav-heading mt-4 mb-1">
-                <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">
-                    USER MANAGEMENT
-                </span>
-            </p>
-            <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('users.index') ? 'active' : '' }}">
-                <li class="nav-item w-100">
-                    <a class="nav-link" href="{{ route('users.index') }}">
-                        <i class="fa-solid fa-users"></i>
-                        <span class="ml-3 item-text">Users</span>
-                    </a>
-                </li>
-            </ul>
-        @endif --}}
-        {{-- <ul class="navbar-nav flex-fill w-100 mb-2">
-            <li class="nav-item w-100">
-                <a class="nav-link" href="#">
-                    <i class="fas fa-history"></i>
-                    <span class="ml-3 item-text">Audit Trail</span>
-                </a>
-            </li>
-        </ul> --}}
-
-
         <!-- Settings -->
         <p class="text-muted-nav nav-heading mt-4 mb-1">
             <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
@@ -187,8 +145,8 @@
             </li>
         </ul>
 
+        <!-- Announcements -->
         @if (Auth::check() && Auth::user()->role === 'Admin')
-            <!-- Announcements -->
             <ul
                 class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('announcements.index') ? 'active' : '' }}">
                 <li class="nav-item w-100">
@@ -199,8 +157,5 @@
                 </li>
             </ul>
         @endif
-
-
-
     </nav>
 </aside>

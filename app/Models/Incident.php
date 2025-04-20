@@ -20,7 +20,6 @@ class Incident extends Model
         'status',
         'reported_by',
         'contact_number',
-
     ];
 
     protected $casts = [
@@ -30,6 +29,6 @@ class Incident extends Model
 
     public function reportedBy()
     {
-        return $this->belongsTo(User::class, 'reported_by');
+        return $this->belongsTo(User::class);
     }
 }

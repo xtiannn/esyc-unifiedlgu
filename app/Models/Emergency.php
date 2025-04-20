@@ -24,4 +24,8 @@ class Emergency extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+    public function case()
+    {
+        return $this->belongsTo(Cases::class, 'case_id');
+    }
 }

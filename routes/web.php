@@ -48,6 +48,11 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->middleware('auth');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/chairman/dashboard', [DashboardController::class, 'chairman'])->name('chairman.dashboard');
+    Route::post('/chairman/reports', [DashboardController::class, 'generateReport'])->name('chairman.reports');
+});
+
 // Main dashboard entry point with role-based redirection
 Route::get('/dashboard', function () {
     if (Auth::check()) {

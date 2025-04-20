@@ -90,9 +90,7 @@
             background-color: #a0f0e6;
         }
     </style>
-
 </head>
-
 
 <div class="loader-mask">
     <div class="loader">
@@ -100,7 +98,6 @@
         <div></div>
     </div>
 </div>
-
 
 <body class="vertical light">
     <div class="wrapper">
@@ -127,8 +124,6 @@
             <!--End Notification Modal  -->
 
             <div class="container-fluid">
-
-
                 {{ $slot }}
             </div>
         </main>
@@ -168,9 +163,6 @@
     <!-- Bootstrap JS (Required for Modals) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".delete-btn").forEach(button => {
@@ -208,8 +200,6 @@
             });
         }
     </script>
-
-
 </body>
 
 </html>
