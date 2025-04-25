@@ -15,14 +15,14 @@
         </div>
 
         <!-- Home Button -->
-        <ul class="navbar-nav flex-fill w-100 mb-2">
+        {{-- <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
                 <a class="nav-link" href="https://smartbarangayconnect.com/landingmainpage.php">
                     <i class="fa-solid fa-home"></i>
                     <span class="ml-3 item-text">Home</span>
                 </a>
             </li>
-        </ul>
+        </ul> --}}
         <!-- Dashboard -->
         <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('dashboard.*') ? 'active' : '' }}">
             <li class="nav-item dropdown">
@@ -131,6 +131,22 @@
             </li>
         </ul>
 
+        <!-- Users Management -->
+        @auth
+            @if (auth()->user()->role !== 'User')
+                <!-- Check if the role is not 'User' -->
+                <ul class="navbar-nav flex-fill w-100 mb-2 {{ request()->routeIs('users') ? 'active' : '' }}">
+                    <li class="nav-item w-100">
+                        <a class="nav-link" href="{{ route('users.index') }}">
+                            <i class="fa-solid fa-users"></i>
+                            <span class="ml-3 item-text">Users Management</span>
+                        </a>
+                    </li>
+                </ul>
+            @endif
+        @endauth
+
+
         <!-- Settings -->
         <p class="text-muted-nav nav-heading mt-4 mb-1">
             <span style="font-size: 10.5px; font-weight: bold; font-family: 'Inter', sans-serif;">SETTINGS</span>
@@ -138,7 +154,7 @@
 
         <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item w-100">
-                <a class="nav-link" href="https://smartbarangayconnect.com/profile.php">
+                <a class="nav-link" href="{{ route('profile.index') }}">
                     <i class="fa-solid fa-user-cog"></i>
                     <span class="ml-3 item-text">Profile Settings</span>
                 </a>

@@ -29,15 +29,72 @@
                         @csrf
 
                         <div class="row g-1">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-floating mb-1">
                                     <input type="text"
-                                        class="form-control form-control-sm @error('name') is-invalid @enderror"
-                                        id="name" name="name" value="{{ old('name') }}"
-                                        placeholder="Full Name" required>
-                                    <label for="name">Full Name</label>
+                                        class="form-control form-control-sm @error('first_name') is-invalid @enderror"
+                                        id="first_name" name="first_name" value="{{ old('first_name') }}"
+                                        placeholder="First Name" required>
+                                    <label for="first_name">First Name</label>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row g-1">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-1">
+                                    <input type="text"
+                                        class="form-control form-control-sm @error('middle_name') is-invalid @enderror"
+                                        id="middle_name" name="middle_name" value="{{ old('middle_name') }}"
+                                        placeholder="Middle Name" required>
+                                    <label for="middle_name">Middle Name</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-1">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-1">
+                                    <input type="text"
+                                        class="form-control form-control-sm @error('last_name') is-invalid @enderror"
+                                        id="last_name" name="last_name" value="{{ old('last_name') }}"
+                                        placeholder="Last Name" required>
+                                    <label for="last_name">Last Name</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-1">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select form-select-sm @error('sex') is-invalid @enderror"
+                                        id="sex" name="sex" required>
+                                        <option value="" disabled {{ old('sex') ? '' : 'selected' }}>Select
+                                            Gender:
+                                        </option>
+                                        <option value="Male" {{ old('sex') === 'Male' ? 'selected' : '' }}>Male
+                                        </option>
+                                        <option value="Female" {{ old('sex') === 'Female' ? 'selected' : '' }}>
+                                            Female
+                                        </option>
+                                    </select>
+                                    <label for="sex">Gender</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select form-select-sm @error('role') is-invalid @enderror"
+                                        id="role" name="role" required>
+                                        <option value="" disabled {{ old('role') ? '' : 'selected' }}>Select Role:
+                                        </option>
+                                        <option value="user" {{ old('role') === 'user' ? 'selected' : '' }}>User
+                                        </option>
+                                        <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin
+                                        </option>
+                                    </select>
+                                    <label for="role">Role</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-1">
                             <div class="col-md-6">
                                 <div class="form-floating mb-1">
                                     <input type="email"
@@ -47,8 +104,16 @@
                                     <label for="email">Email Address</label>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-1">
+                                    <input type="text"
+                                        class="form-control form-control-sm @error('contact_number') is-invalid @enderror"
+                                        id="contact_number" name="contact_number" value="{{ old('contact_number') }}"
+                                        placeholder="Mobile Number" required>
+                                    <label for="contact_number">Mobile Number</label>
+                                </div>
+                            </div>
                         </div>
-
                         <div class="row g-1">
                             <div class="col-md-6">
                                 <div class="form-floating mb-1">
@@ -69,102 +134,9 @@
                             </div>
                         </div>
 
-                        <div class="form-floating mb-1">
-                            <input type="text"
-                                class="form-control form-control-sm @error('address') is-invalid @enderror"
-                                id="address" name="address" value="{{ old('address') }}" placeholder="Address"
-                                required>
-                            <label for="address">Address</label>
-                        </div>
 
-                        <div class="row g-1">
-                            <div class="col-md-6">
-                                <div class="form-floating mb-1">
-                                    <input type="text"
-                                        class="form-control form-control-sm @error('contact_number') is-invalid @enderror"
-                                        id="contact_number" name="contact_number" value="{{ old('contact_number') }}"
-                                        placeholder="Contact Number" required>
-                                    <label for="contact_number">Contact Number</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating mb-1">
-                                    <input type="date"
-                                        class="form-control form-control-sm @error('birth_date') is-invalid @enderror"
-                                        id="birth_date" name="birth_date" value="{{ old('birth_date') }}" required>
-                                    <label for="birth_date">Birthdate</label>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="row g-1">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <select
-                                        class="form-select form-select-sm @error('civil_status') is-invalid @enderror"
-                                        id="civil_status" name="civil_status" required>
-                                        <option value="" {{ old('civil_status') ? '' : 'selected' }} disabled>
-                                            Select...</option>
-                                        <option value="Single" {{ old('civil_status') === 'Single' ? 'selected' : '' }}>
-                                            Single</option>
-                                        <option value="Married"
-                                            {{ old('civil_status') === 'Married' ? 'selected' : '' }}>Married</option>
-                                        <option value="Divorced"
-                                            {{ old('civil_status') === 'Divorced' ? 'selected' : '' }}>Divorced
-                                        </option>
-                                        <option value="Widowed"
-                                            {{ old('civil_status') === 'Widowed' ? 'selected' : '' }}>Widowed</option>
-                                    </select>
-                                    <label for="civil_status">Civil Status</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <select class="form-select form-select-sm @error('gender') is-invalid @enderror"
-                                        id="gender" name="gender" required>
-                                        <option value="" {{ old('gender') ? '' : 'selected' }} disabled>
-                                            Select...</option>
-                                        <option value="Male" {{ old('gender') === 'Male' ? 'selected' : '' }}>Male
-                                        </option>
-                                        <option value="Female" {{ old('gender') === 'Female' ? 'selected' : '' }}>
-                                            Female</option>
-                                        <option value="Other" {{ old('gender') === 'Other' ? 'selected' : '' }}>Other
-                                        </option>
-                                    </select>
-                                    <label for="gender">Gender</label>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="form-floating my-1">
-                            <input type="text"
-                                class="form-control form-control-sm @error('occupation') is-invalid @enderror"
-                                id="occupation" name="occupation" value="{{ old('occupation') }}"
-                                placeholder="Occupation">
-                            <label for="occupation">Occupation</label>
-                        </div>
-
-                        <div class="row g-1">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text"
-                                        class="form-control form-control-sm @error('household_number') is-invalid @enderror"
-                                        id="household_number" name="household_number"
-                                        value="{{ old('household_number') }}" placeholder="Household Number"
-                                        required>
-                                    <label for="household_number">Household Number</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text"
-                                        class="form-control form-control-sm @error('barangay_id') is-invalid @enderror"
-                                        id="barangay_id" name="barangay_id" value="{{ old('barangay_id') }}"
-                                        placeholder="Barangay ID" required>
-                                    <label for="barangay_id">Barangay ID</label>
-                                </div>
-                            </div>
-                        </div>
 
                         <button type="submit" class="btn btn-primary w-100 py-3 mt-2 fw-semibold">Register</button>
 
@@ -175,6 +147,8 @@
                             </p>
                         </div>
                     </form>
+
+
                 </div>
             </div>
         </div>

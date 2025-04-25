@@ -26,7 +26,12 @@ use App\Models\ScholarshipRequirement;
 // Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('store');
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('cluster.logout');
 
-
+Route::post('/logout', function () {
+    Auth::logout(); // Log the user out
+    request()->session()->invalidate(); // Invalidate the session
+    request()->session()->regenerateToken(); // Regenerate the CSRF token
+    return redirect('/login'); // Redirect to the login page
+})->name('logout');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', function () {

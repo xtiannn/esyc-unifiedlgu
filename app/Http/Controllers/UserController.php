@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Scholarship;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +13,6 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-
     public function index()
     {
         $users = User::all(); // Fetch all users
@@ -26,7 +24,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        // Return a view for creating a user (optional implementation)
+        return view('users.create');
     }
 
     /**
@@ -35,55 +34,42 @@ class UserController extends Controller
     public function store(Request $request)
     {
         try {
+
             // Validate request
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:8|max:255',
-                'address' => 'required|string|max:100',
-                'role' => 'required|string|max:5',
-                'contact_number' => 'required|string|max:15',
-                'birth_date' => 'required',
-                'civil_status' => 'required|string',
-                'gender' => 'required|string',
-                'occupation' => 'required|string',
-                'household_number' => 'required|string',
-                'barangay_id' => 'required|string',
+            $data = $request->validate([
+                'last_name' => 'required|string|max:255',
+                'first_name' => 'required|string|max:255',
+                'middle_name' => 'nullable|string|max:255',
+                'email' => ['required', 'email', Rule::unique('users', 'email')],
+                'password' => 'required|string|min:8|max:255|confirmed', // Use Laravel's password confirmation validation
+                'address' => 'required|string|max:255',
+                'birth_date' => 'nullable|date',
+                'role' => ['nullable', 'string', Rule::in(['User', 'Admin'])],
+                'sex' => ['nullable', 'string', Rule::in(['FEMALE', 'MALE'])],
+                'mobile' => 'required|string|max:15',
+                'occupation' => 'required|string|max:255',
             ]);
 
-            // Create new user with hashed password
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'address' => $request->address,
-                'role' => $request->role,
-                'contact_number' => $request->contact_number,
-                'birth_date' => $request->birth_date,
-                'civil_status' => $request->civil_status,
-                'gender' => $request->gender,
-                'occupation' => $request->occupation,
-                'household_number' => $request->household_number,
-                'barangay_id' => $request->barangay_id,
+            // Hash password
+            $data['password'] = Hash::make($data['password']);
+            $data['role'] = $data['role'] ?? 'User'; // Default to 'User'
 
-            ]);
-
-            flash()->success('User created successfully!');
-
+            // Create user
+            User::create($data);
+            session()->flash('success', 'User created successfully!');
             return redirect()->route('users.index');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to create user: ' . $e->getMessage()]);
         }
     }
 
-
-
     /**
      * Display the specified resource.
      */
     public function show(User $user)
     {
-        //
+        // Return a view to show user details (optional implementation)
+        return view('users.show', compact('user'));
     }
 
     /**
@@ -91,7 +77,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        // Return a view for editing the user
+        return view('users.edit', compact('user'));
     }
 
     /**
@@ -101,41 +88,33 @@ class UserController extends Controller
     {
         try {
             // Validate request
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|string|min:8|max:255',
+            $data = $request->validate([
+                'last_name' => 'required|string|max:255',
+                'first_name' => 'required|string|max:255',
+                'middle_name' => 'nullable|string|max:255',
+                'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($user->id)],
+                'password' => 'nullable|string|min:8|max:255',
                 'address' => 'required|string|max:100',
-                'role' => 'required|string|max:5',
-                'contact_number' => 'required|string|max:15',
-                'birth_date' => 'required',
-                'civil_status' => 'required|string',
-                'gender' => 'required|string',
+                'birth_date' => 'nullable|date',
+                'role' => ['nullable', 'string', Rule::in(['User', 'Admin'])],
+                'working' => ['nullable', 'string', Rule::in(['yes', 'no'])],
+                'mobile' => 'required|string|max:15',
+                'sex' => 'required|string',
                 'occupation' => 'required|string',
-                'household_number' => 'required|string',
-                'barangay_id' => 'required|string',
             ]);
+            // Hash password if provided
+            if (!empty($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            } else {
+                unset($data['password']); // Do not update the password field
+            }
 
-            // Create new user with hashed password
-            $user = User::update([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'address' => $request->address,
-                'role' => $request->role,
-                'contact_number' => $request->contact_number,
-                'birth_date' => $request->birth_date,
-                'civil_status' => $request->civil_status,
-                'gender' => $request->gender,
-                'occupation' => $request->occupation,
-                'household_number' => $request->household_number,
-                'barangay_id' => $request->barangay_id,
+            $user->update($data);
 
-            ]);
-
-            return to_route('users.index');
+            session()->flash('success', 'User updated successfully!');
+            return redirect()->route('users.index');
         } catch (Exception $e) {
-            return back()->withErrors(['error' => $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to update user: ' . $e->getMessage()]);
         }
     }
 
@@ -147,8 +126,7 @@ class UserController extends Controller
         try {
             $user->delete();
 
-            flash()->success('User deleted successfully!');
-
+            session()->flash('success', 'User deleted successfully!');
             return redirect()->route('users.index');
         } catch (Exception $e) {
             return back()->withErrors(['error' => 'Failed to delete user: ' . $e->getMessage()]);

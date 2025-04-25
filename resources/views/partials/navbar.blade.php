@@ -293,12 +293,14 @@
                 <a class="dropdown-item editUserBtn" href="https://smartbarangayconnect.com/profile.php">
                     <i class="fe fe-user"></i> Profile
                 </a>
-                <form action="{{ route('cluster.logout') }}" method="POST">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
-                    <button class="dropdown-item text-danger" type="submit">
-                        <i class="fe fe-log-out"></i> Log Out
-                    </button>
                 </form>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    class="dropdown-item text-danger">
+                    <i class="fe fe-log-out"></i> Log Out
+                </a>
+
             </div>
         </li>
     </ul>

@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -17,12 +16,12 @@ class User extends Authenticatable
      * @var array<string>
      */
     protected $fillable = [
-        'id',
         'first_name',
         'middle_name',
         'last_name',
         'suffix',
         'email',
+        'address',
         'password',
         'birth_date',
         'sex',
@@ -44,12 +43,19 @@ class User extends Authenticatable
         'last_activity',
     ];
 
+    /**
+     * Boot method for the model.
+     */
     protected static function boot()
     {
         parent::boot();
 
         static::saving(function ($user) {
-            $user->name = trim("{$user->last_name}, {$user->first_name} {$user->middle_name}");
+            $user->name = trim(
+                "{$user->last_name}, {$user->first_name}" .
+                    ($user->middle_name ? " {$user->middle_name}" : '') .
+                    ($user->suffix ? " {$user->suffix}" : '')
+            );
         });
     }
 
@@ -67,9 +73,9 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
     protected $casts = [
         'password' => 'hashed',
@@ -80,56 +86,70 @@ class User extends Authenticatable
     ];
 
     /**
+     * Accessor for full name.
+     */
+    public function getNameAttribute()
+    {
+        return trim(
+            ucfirst($this->first_name) .
+                ($this->middle_name ? ' ' . ucfirst($this->middle_name) : '') .
+                ' ' . ucfirst($this->last_name)
+        );
+    }
+
+    /**
      * Check if the user is an admin.
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'Super Admin';
+        return in_array($this->role, ['Super Admin', 'Admin']);
+    }
+
+    /**
+     * Check if the user is working.
+     */
+    public function isWorking(): bool
+    {
+        return strtolower($this->working) === 'yes';
     }
 
     /**
      * Relationships
      */
+
+    // User's logs
     public function logs()
     {
         return $this->hasMany(AuditLog::class);
     }
 
+    // Scholarship assigned to user
     public function scholarships()
     {
         return $this->hasOne(Scholarship::class, 'user_id');
     }
 
+    // Emergencies reported by the user
     public function emergencies()
     {
         return $this->hasMany(Emergency::class, 'reported_by');
     }
 
+    // Messages sent by the user
     public function messages()
     {
         return $this->hasMany(Message::class);
     }
 
+    // Conversations initiated by the user
     public function conversations()
     {
         return $this->hasMany(Conversation::class, 'user_id');
     }
 
+    // Conversations assigned to the user (as an agent)
     public function assignedConversations()
     {
         return $this->hasMany(Conversation::class, 'agent_id');
-    }
-
-    public function getNameAttribute()
-    {
-        return ucfirst($this->first_name) . ' ' . ucfirst($this->middle_name) . ' ' . ucfirst($this->last_name);
-    }
-
-    /**
-     * Check if user is working
-     */
-    public function isWorking(): bool
-    {
-        return $this->working === 'yes';
     }
 }

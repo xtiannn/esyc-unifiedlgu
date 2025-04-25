@@ -10,53 +10,85 @@
     <form method="POST" action="{{ route('profile.update') }}">
         @csrf
         @method('PUT')
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control form-control-sm @error('first_name') is-invalid @enderror"
+                        id="first_name" name="first_name" value="{{ old('first_name', $profile->first_name) }}"
+                        placeholder="First Name" required>
+                    <label for="first_name">First Name</label>
+                    @error('first_name')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-floating mb-1">
+                    <input type="text"
+                        class="form-control form-control-sm @error('middle_name') is-invalid @enderror" id="middle_name"
+                        name="middle_name" value="{{ old('middle_name', $profile->middle_name) }}"
+                        placeholder="Middle Name">
+                    <label for="middle_name">Middle Name</label>
+                    @error('middle_name')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control form-control-sm @error('last_name') is-invalid @enderror"
+                        id="last_name" name="last_name" value="{{ old('last_name', $profile->last_name) }}"
+                        placeholder="Last Name" required>
+                    <label for="last_name">Last Name</label>
+                    @error('last_name')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                </div>
+            </div>
+        </div>
+
         <div class="row g-1">
             <div class="col-md-6">
                 <div class="form-floating mb-1">
-                    <input type="text" class="form-control form-control-sm" id="name" name="name"
-                        value="{{ old('name', $profile->name) }}" required>
-                    <label for="name">Full Name</label>
+                    <select class="form-select form-select-sm @error('sex') is-invalid @enderror" id="sex"
+                        name="sex" required>
+                        <option value="" disabled {{ old('sex', $profile->sex) ? '' : 'selected' }}>Select...
+                        </option>
+                        <option value="MALE" {{ old('sex', $profile->sex) === 'MALE' ? 'selected' : '' }}>Male
+                        </option>
+                        <option value="FEMALE" {{ old('sex', $profile->sex) === 'FEMALE' ? 'selected' : '' }}>Female
+                        </option>
+                    </select>
+                    <label for="sex">Sex</label>
+                    @error('sex')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-1">
-                    <input type="email" class="form-control form-control-sm" id="email" name="email"
-                        value="{{ old('email', $profile->email) }}" required>
+                    <input type="email" class="form-control form-control-sm @error('email') is-invalid @enderror"
+                        id="email" name="email" value="{{ old('email', $profile->email) }}"
+                        placeholder="Email Address" required>
                     <label for="email">Email Address</label>
+                    @error('email')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
         </div>
 
         <div class="row g-1">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="form-floating mb-1">
-                    <input type="password" class="form-control form-control-sm" id="password" name="password"
-                        placeholder="Leave blank to keep current password">
-                    <label for="password">New Password</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating mb-1">
-                    <input type="password" class="form-control form-control-sm" id="password_confirmation"
-                        name="password_confirmation">
-                    <label for="password_confirmation">Confirm Password</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-1">
-            <div class="col-md-6">
-                <div class="form-floating mb-1">
-                    <input type="text" class="form-control form-control-sm" id="address" name="address"
-                        value="{{ old('address', $profile->address) }}" required>
+                    <input type="text" class="form-control form-control-sm @error('address') is-invalid @enderror"
+                        id="address" name="address" value="{{ old('address', $profile->address) }}"
+                        placeholder="Address" required>
                     <label for="address">Address</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating">
-                    <input type="text" class="form-control form-control-sm" id="occupation" name="occupation"
-                        value="{{ old('occupation', $profile->occupation) }}">
-                    <label for="occupation">Occupation</label>
+                    @error('address')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
         </div>
@@ -64,50 +96,24 @@
         <div class="row g-1">
             <div class="col-md-6">
                 <div class="form-floating mb-1">
-                    <input type="text" class="form-control form-control-sm" id="contact_number" name="contact_number"
-                        value="{{ old('contact_number', $profile->contact_number) }}" required>
-                    <label for="contact_number">Contact Number</label>
+                    <input type="text" class="form-control form-control-sm @error('mobile') is-invalid @enderror"
+                        id="mobile" name="mobile" value="{{ old('mobile', $profile->mobile) }}"
+                        placeholder="Contact Number" required>
+                    <label for="mobile">Contact Number</label>
+                    @error('mobile')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating mb-1">
-                    <input type="date" class="form-control form-control-sm" id="birth_date" name="birth_date"
-                        value="{{ old('birth_date', $profile->birth_date) }}" required>
+                    <input type="date" class="form-control form-control-sm @error('birth_date') is-invalid @enderror"
+                        id="birth_date" name="birth_date" value="{{ old('birth_date', $profile->birth_date) }}"
+                        required>
                     <label for="birth_date">Birthdate</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-1">
-            <div class="col-md-6">
-                <div class="form-floating">
-                    <select class="form-select form-select-sm" id="civil_status" name="civil_status" required>
-                        <option value="Single"
-                            {{ old('civil_status', $profile->civil_status) === 'Single' ? 'selected' : '' }}>
-                            Single</option>
-                        <option value="Married"
-                            {{ old('civil_status', $profile->civil_status) === 'Married' ? 'selected' : '' }}>
-                            Married</option>
-                        <option value="Divorced"
-                            {{ old('civil_status', $profile->civil_status) === 'Divorced' ? 'selected' : '' }}>
-                            Divorced</option>
-                        <option value="Widowed"
-                            {{ old('civil_status', $profile->civil_status) === 'Widowed' ? 'selected' : '' }}>
-                            Widowed</option>
-                    </select>
-                    <label for="civil_status">Civil Status</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-floating">
-                    <select class="form-select form-select-sm" id="gender" name="gender" required>
-                        <option value="Male" {{ old('gender', $profile->gender) === 'Male' ? 'selected' : '' }}>Male
-                        </option>
-                        <option value="Female" {{ old('gender', $profile->gender) === 'Female' ? 'selected' : '' }}>
-                            Female
-                        </option>
-                    </select>
-                    <label for="gender">Gender</label>
+                    @error('birth_date')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
         </div>
@@ -115,20 +121,35 @@
         <div class="row g-1 my-1">
             <div class="col-md-6">
                 <div class="form-floating">
-                    <input type="text" class="form-control form-control-sm" id="household_number"
-                        name="household_number" value="{{ old('household_number', $profile->household_number) }}"
-                        required>
-                    <label for="household_number">Household Number</label>
+                    <select class="form-select form-select-sm @error('role') is-invalid @enderror" id="role"
+                        name="role" required>
+                        <option value="" disabled {{ old('role', $profile->role) ? '' : 'selected' }}>Select...
+                        </option>
+                        <option value="Admin" {{ old('role', $profile->role) === 'Admin' ? 'selected' : '' }}>Admin
+                        </option>
+                        <option value="User" {{ old('role', $profile->role) === 'User' ? 'selected' : '' }}>User
+                        </option>
+                    </select>
+                    <label for="role">User Role</label>
+                    @error('role')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-floating">
-                    <input type="text" class="form-control form-control-sm" id="barangay_id" name="barangay_id"
-                        value="{{ old('barangay_id', $profile->barangay_id) }}" required>
-                    <label for="barangay_id">Barangay ID</label>
+                    <input type="text"
+                        class="form-control form-control-sm @error('occupation') is-invalid @enderror" id="occupation"
+                        name="occupation" value="{{ old('occupation', $profile->occupation) }}"
+                        placeholder="Occupation">
+                    <label for="occupation">Occupation</label>
+                    @error('occupation')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 </div>
             </div>
         </div>
+
         <div class="modal-footer mt-2">
             <button type="submit" class="btn btn-primary">
                 <i class="fa fa-save"></i> Update Profile

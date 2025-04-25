@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -23,16 +24,15 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'first_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
-            'contact_number' => 'nullable|string|max:20',
+            'mobile' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
             'birth_date' => 'nullable|date',
-            'gender' => 'nullable|in:male,female,other',
-            'civil_status' => 'nullable|in:single,married,widowed,separated',
+            'sex' => 'nullable|in:MALE,FEMALE',
             'occupation' => 'nullable|string|max:255',
-            'household_number' => 'nullable|string|max:50',
-            'barangay_id' => 'nullable|integer', // 🔥 Fixed: Removed "exists:barangays,id"
             'password' => 'nullable|min:8|confirmed',
         ]);
 
@@ -45,5 +45,4 @@ class ProfileController extends Controller
 
         return redirect()->route('profile.index')->with('success', 'Profile updated successfully.');
     }
-
 }

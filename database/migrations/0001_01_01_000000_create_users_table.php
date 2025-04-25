@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->date('birth_date')->nullable();
             $table->enum('sex', ['MALE', 'FEMALE', 'OTHER'])->nullable();
             $table->string('mobile', 20)->nullable();
+            $table->string('address')->nullable();
             $table->string('city')->nullable();
             $table->string('house')->nullable();
             $table->string('street')->nullable();

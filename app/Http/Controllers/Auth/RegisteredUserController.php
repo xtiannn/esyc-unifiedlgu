@@ -31,40 +31,32 @@ class RegisteredUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'address' => ['required', 'string', 'max:255'],
-            'contact_number' => ['required', 'string', 'max:15'],
-            'birth_date' => ['required', 'date'],
-            'civil_status' => ['required', 'string'],
-            'gender' => ['required', 'string'],
-            'occupation' => ['nullable', 'string', 'max:255'],
-            'household_number' => ['required', 'string', 'max:50'],
-            'barangay_id' => ['required', 'string', 'max:50'],
+            'last_name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|confirmed|min:8',
+            'mobile' => 'nullable|string|max:15',
+            'sex' => 'required|in:Male,Female,Other',
+            'role' => 'required|in:user,admin',
         ]);
 
-        // Check if the user table is empty (first user)
-        $isFirstUser = User::count() === 0;
+
 
         $user = User::create([
-            'name' => $request->name,
+            'last_name' => $request->last_name,
+            'first_name' => $request->first_name,
+            'middle_name' => $request->middle_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'address' => $request->address,
-            'contact_number' => $request->contact_number,
-            'birth_date' => $request->birth_date,
-            'civil_status' => $request->civil_status,
-            'gender' => $request->gender,
-            'occupation' => $request->occupation,
-            'household_number' => $request->household_number,
-            'barangay_id' => $request->barangay_id,
-            'role' => $isFirstUser ? 'Admin' : 'User', // Assign Admin if first user, else User
+            'mobile' => $request->contact_number,
+            'sex' => $request->gender,
+            'role' => $request->role,
         ]);
 
         event(new Registered($user));
 
-        Scholarship::create(['user_id' => $user->id]);
+        // Scholarship::create(['user_id' => $user->id]);
 
         Auth::login($user);
 
