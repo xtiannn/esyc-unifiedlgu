@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\InterviewSlot;
 use App\Models\ScholarshipRequirement;
-
+use App\Models\ScholarshipStatus;
 
 class ScholarshipController extends Controller
 {
@@ -44,10 +44,14 @@ class ScholarshipController extends Controller
     {
         $userId = auth()->id();
         $hasApplied = Scholarship::where('user_id', $userId)->first();
-        $requirements = ScholarshipRequirement::all();  // Fetch all requirements
+        $requirements = ScholarshipRequirement::all(); // Fetch all requirements
 
-        return view('scholarship.users', compact('hasApplied', 'requirements'));
+        // Fetch the scholarship status (default to 'closed' if no record is found)
+        $scholarshipStatus = ScholarshipStatus::first()?->status ?? 'closed';
+
+        return view('scholarship.users', compact('hasApplied', 'requirements', 'scholarshipStatus'));
     }
+
 
 
 

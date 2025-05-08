@@ -241,11 +241,11 @@ a {
     background-color: transparent;
 }
 
-section:hover {
+/* section:hover {
     cursor: pointer;
     background-color: #dcdcdc;
     text-decoration: underline;
-}
+} */
 
 a:not([href]) {
     color: inherit;

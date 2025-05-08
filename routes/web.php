@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmergencyController;
@@ -89,6 +90,7 @@ Route::middleware('auth')->group(function () {
     // User-side routes
     Route::get('/scholarships/user', [ScholarshipController::class, 'users'])->name('scholarship.users');
     Route::post('/scholarship/apply', [ScholarshipController::class, 'apply'])->name('scholarship.apply');
+    Route::get('/banner', [BannerController::class, 'fetchBanner'])->name('banner.fetch');
 
     // Admin-only routes
     Route::get('/scholarships/admin', [ScholarshipController::class, 'admin'])->name('scholarship.admin');
@@ -111,8 +113,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/requirements/{requirement}/edit', [ScholarshipRequirementController::class, 'edit'])->name('requirements.edit');
     Route::put('/requirements/{requirement}', [ScholarshipRequirementController::class, 'update'])->name('requirements.update');
     Route::delete('/requirements/{requirement}', [ScholarshipRequirementController::class, 'destroy'])->name('requirements.destroy');
+    Route::put('/scholarship/status/toggle', [ScholarshipRequirementController::class, 'toggleScholarshipStatus'])->name('scholarship.toggleStatus');
 });
 
+
+Route::post('/banners', [BannerController::class, 'store'])->name('banners.store');
 
 
 
@@ -244,6 +249,8 @@ Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 
 Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
 // Route::get('/notifications/{id}', [NotificationController::class, 'show']);
 Route::get('/notifications/{id}/details', [NotificationController::class, 'getDetails'])->name('notifications.details');
+
+
 
 
 require __DIR__ . '/auth.php';

@@ -371,6 +371,11 @@
             font-size: 0.875rem;
             margin: 0.5rem 0;
         }
+
+        .card-img {
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
     </style>
 
     <div class="container">
@@ -426,7 +431,7 @@
         </div>
 
         <!-- Filter Bar -->
-        <div class="filter-bar" role="search" aria-label="Dashboard Filters">
+        {{-- <div class="filter-bar" role="search" aria-label="Dashboard Filters">
             <input type="text" id="search-input" class="form-control search-input"
                 placeholder="Search announcements or logs..." aria-label="Search">
             <select id="date-filter" class="form-control" aria-label="Filter by Date Range">
@@ -441,7 +446,7 @@
                 <option value="title-asc">Title (A-Z)</option>
                 <option value="title-desc">Title (Z-A)</option>
             </select>
-        </div>
+        </div> --}}
 
         <!-- Residents Stats -->
         <section class="section" aria-labelledby="residents-stats-title">
@@ -465,6 +470,17 @@
                 @endforeach
             </div>
         </section>
+
+
+
+        <div class="card">
+            <div class="card-body">
+                <img src="{{ asset('assets/images/banner.png') }}" alt="Banner Image" class="card-img"
+                    style="width: 100%; height: auto;">
+            </div>
+        </div>
+
+
 
         <!-- Emergency Alerts -->
         <section class="section" aria-labelledby="emergency-alerts-title">
@@ -493,8 +509,7 @@
                                             By {{ $emergency->creator->name ?? 'Unknown' }} on
                                             {{ $emergency->created_at ? $emergency->created_at->format('M d, Y H:i') : 'Unknown date' }}
                                             @if ($emergency->case)
-                                                | Linked to Case: <a
-                                                    href="{{ route('cases.show', $emergency->case) }}"
+                                                | Linked to Case: <a href="{{ route('cases.show', $emergency->case) }}"
                                                     style="color: var(--primary); text-decoration: none;"
                                                     aria-label="View Case {{ $emergency->case->case_title ?? 'Untitled Case' }}">
                                                     {{ $emergency->case->case_title ?? 'Untitled Case' }}

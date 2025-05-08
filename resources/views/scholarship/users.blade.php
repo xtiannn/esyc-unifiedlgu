@@ -1,5 +1,123 @@
 <x-app-layout>
+    <style>
+        .banner {
+            width: 100%;
+            height: 200px;
+            /* Adjust height as necessary */
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
     @section('title', 'Scholarship')
+
+    <!-- Modal for Open Scholarship -->
+    @if ($scholarshipStatus === 'open')
+        <div class="modal fade" id="applyScholarship" tabindex="-1" aria-labelledby="applyScholarshipLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Apply for Scholarship</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h5 class="mb-3">Apply for Scholarship</h5>
+                        <form method="POST" action="{{ route('scholarship.apply') }}" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row g-3">
+                                <!-- Left Column -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Name:</label>
+                                    <p class="form-control-plaintext">{{ auth()->user()->name }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Email:</label>
+                                    <p class="form-control-plaintext">{{ auth()->user()->email }}</p>
+                                </div>
+
+                                <!-- Right Column -->
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Contact Number:</label>
+                                    <p class="form-control-plaintext">{{ auth()->user()->mobile ?? 'N/A' }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="document_link" class="form-label fw-bold">Document Link:</label>
+                                    <input type="url" name="document_link" id="document_link" class="form-control"
+                                        required>
+                                    <small class="text-muted" style="font-size: 12px">
+                                        Only Google Drive links are accepted. Make sure the link is publicly accessible
+                                        or
+                                        set to "Anyone with the link can view."
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer mt-3">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Submit Application</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+    @if ($scholarshipStatus === 'closed')
+        <!-- Scholarship Closed Modal -->
+        <div class="modal fade" id="scholarshipClosed" tabindex="-1" aria-labelledby="scholarshipClosedLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Scholarship Application Closed</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                            id="closeScholarshipModal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="mb-3">
+                            <span style="font-size: 50px; color: #ff6b6b;">😞</span>
+                        </div>
+                        <h5 class="mb-3">We're sorry!</h5>
+                        <p class="mb-2">The scholarship application period has ended, and we are no longer accepting
+                            applications.</p>
+                        <p>Stay tuned for updates on future opportunities!</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            id="showBannerModalBtn">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+    <!-- New Requirements banner Modal -->
+    <div class="modal fade" id="bannerModal" tabindex="-1" aria-labelledby="bannerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        id="closeModalBtn"></button>
+                </div>
+                <div class="modal-body text-center">
+                    {{-- @if ($banner)
+                    <img src="{{ asset('storage/' . $banner->image_path) }}" alt="Banner Image" class="img-fluid" />
+                @else
+                    <p>No banner available at the moment.</p>
+                @endif --}}
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        id="closeModalBtnFooter">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
     <div class="d-flex flex-column justify-content-center align-items-center min-vh-100 text-center">
         @if ($hasApplied && $hasApplied->scholarship_status === 'applied')
@@ -129,8 +247,15 @@
                         View Requirements
                     </button>
 
-                    <button class="btn btn-primary btn-lg px-5 py-3 shadow-sm hover-lift" data-bs-toggle="modal"
-                        data-bs-target="#applyScholarship">Apply Scholarship</button>
+                    <!-- Show the modal trigger for open applications -->
+                    @if ($scholarshipStatus === 'open')
+                        <button class="btn btn-primary btn-lg px-5 py-3 shadow-sm hover-lift" data-bs-toggle="modal"
+                            data-bs-target="#applyScholarship">Apply Scholarship</button>
+                    @endif
+                    @if ($scholarshipStatus === 'closed')
+                        <button class="btn btn-primary btn-lg px-5 py-3 shadow-sm hover-lift" data-bs-toggle="modal"
+                            data-bs-target="#scholarshipClosed">Apply Scholarship</button>
+                    @endif
                 </div>
             </div>
         @endif
@@ -227,56 +352,6 @@
 
 
 
-    <div class="modal fade" id="applyScholarship" tabindex="-1" aria-labelledby="applyScholarship"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5"></h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h5 class="mb-3">Apply for Scholarship</h5>
-                    <form method="POST" action="{{ route('scholarship.apply') }}" enctype="multipart/form-data">
-                        @csrf
-                        <div class="row g-3">
-                            <!-- Left Column -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Name:</label>
-                                <p class="form-control-plaintext">{{ auth()->user()->name }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Email:</label>
-                                <p class="form-control-plaintext">{{ auth()->user()->email }}</p>
-                            </div>
-
-                            <!-- Right Column -->
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Contact Number:</label>
-                                <p class="form-control-plaintext">{{ auth()->user()->mobile ?? 'N/A' }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="document_link" class="form-label fw-bold">Document Link:</label>
-                                <input type="url" name="document_link" id="document_link" class="form-control"
-                                    required>
-                                <small class="text-muted" style="font-size: 12px">
-                                    Only Google Drive links are accepted. Make sure the link is publicly accessible or
-                                    set to "Anyone with the link can view."
-                                </small>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer mt-3">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Submit Application</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
 
 
     <!-- Scholarship Details Modal -->
@@ -356,6 +431,61 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bannerModal = document.getElementById('bannerModal');
+            bannerModal.addEventListener('show.bs.modal', function() {
+                fetchBanner();
+            });
+
+            function fetchBanner() {
+                fetch('{{ route('banner.fetch') }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        const modalBody = bannerModal.querySelector('.modal-body');
+                        if (data.image_path) {
+                            modalBody.innerHTML = `
+                                <img src="{{ asset('storage/') }}/${data.image_path}" class="img-fluid" />
+
+                            `;
+                        } else {
+                            modalBody.innerHTML = `
+                                <p class="text-muted">No banner available at the moment.</p>
+                            `;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching banner:', error);
+                        bannerModal.querySelector('.modal-body').innerHTML = `
+                            <p class="text-danger">Failed to load the banner. Please try again later.</p>
+                        `;
+                    });
+            }
+        });
+    </script>
 
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener for closing the scholarship closed modal and opening the banner modal
+            const closeButton = document.getElementById('closeScholarshipModal');
+            const showBannerButton = document.getElementById('showBannerModalBtn');
+
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    // Wait for the scholarship modal to close, then open the banner modal
+                    $('#scholarshipClosed').on('hidden.bs.modal', function() {
+                        $('#bannerModal').modal('show');
+                    });
+                });
+            }
+
+            if (showBannerButton) {
+                showBannerButton.addEventListener('click', function() {
+                    // Trigger the banner modal to show once the "Close" button is clicked
+                    $('#bannerModal').modal('show');
+                });
+            }
+        });
+    </script>
 </x-app-layout>
