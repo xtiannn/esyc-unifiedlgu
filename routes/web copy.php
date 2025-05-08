@@ -20,14 +20,6 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ScholarshipRequirementController;
 use App\Models\ScholarshipRequirement;
-use Illuminate\Support\Facades\Artisan;
-
-Route::get('/setup', function () {
-    Artisan::call('migrate');
-    Artisan::call('db:seed');
-    Artisan::call('storage:link');
-    return 'Setup Done';
-});
 
 // Override Breeze’s login route
 
@@ -96,12 +88,12 @@ Route::middleware('auth')->group(function () {
 // Routes accessible only by authenticated users
 Route::middleware('auth')->group(function () {
     // User-side routes
-    // Route::get('/scholarships/user', [ScholarshipController::class, 'users'])->name('scholarship.users');
+    Route::get('/scholarships/user', [ScholarshipController::class, 'users'])->name('scholarship.users');
     Route::post('/scholarship/apply', [ScholarshipController::class, 'apply'])->name('scholarship.apply');
     Route::get('/banner', [BannerController::class, 'fetchBanner'])->name('banner.fetch');
 
     // Admin-only routes
-    // Route::get('/scholarships/admin', [ScholarshipController::class, 'admin'])->name('scholarship.admin');
+    Route::get('/scholarships/admin', [ScholarshipController::class, 'admin'])->name('scholarship.admin');
     Route::post('/scholarships/update-slots', [ScholarshipController::class, 'updateSlots'])->name('update.slots');
 
 
@@ -169,9 +161,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/incidents/{incident}', [IncidentController::class, 'update'])->name('incident.update');
     Route::delete('/incidents/{incident}', [IncidentController::class, 'destroy'])->name('incident.destroy');
 
-    // Route::post('/incident/{incident}/update-status', [IncidentController::class, 'updateStatus'])
-    //     ->name('incident.updateStatus')
-    //     ->middleware('auth');
+    Route::post('/incident/{incident}/update-status', [IncidentController::class, 'updateStatus'])
+        ->name('incident.updateStatus')
+        ->middleware('auth');
 });
 
 // User Management Routes
@@ -241,9 +233,9 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index'); // Add this route
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 // Include authentication routes
