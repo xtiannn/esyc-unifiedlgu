@@ -17,6 +17,6 @@ class CreateBannersTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('banners');
+        Schema::dropIfExists('scholarship_banners');
     }
 }
