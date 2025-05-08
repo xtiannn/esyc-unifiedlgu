@@ -8,7 +8,7 @@ class CreateBannersTable extends Migration
 {
     public function up()
     {
-        Schema::create('banners', function (Blueprint $table) {
+        Schema::create('scholarship_banners', function (Blueprint $table) {
             $table->id();
             $table->string('image_path'); // Store the image path
             $table->timestamps();

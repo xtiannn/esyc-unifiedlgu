@@ -290,7 +290,7 @@
             </span>
 
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                <a class="dropdown-item editUserBtn" href="https://smartbarangayconnect.com/profile.php">
+                <a class="dropdown-item editUserBtn" href="{{ route('profile.index') }}">
                     <i class="fe fe-user"></i> Profile
                 </a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
