@@ -168,6 +168,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/incidents/{id}', [IncidentController::class, 'show'])->name('incident.show');
     Route::put('/incidents/{incident}', [IncidentController::class, 'update'])->name('incident.update');
     Route::delete('/incidents/{incident}', [IncidentController::class, 'destroy'])->name('incident.destroy');
+    // This is a deploy trigger
 
     // Route::post('/incident/{incident}/update-status', [IncidentController::class, 'updateStatus'])
     //     ->name('incident.updateStatus')
