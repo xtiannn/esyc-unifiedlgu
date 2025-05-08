@@ -63,6 +63,17 @@
                             </div>
                         </div>
                         <div class="row g-1">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-1">
+                                    <input type="email"
+                                        class="form-control form-control-sm @error('email') is-invalid @enderror"
+                                        id="email" name="email" value="{{ old('email') }}"
+                                        placeholder="Email Address" required>
+                                    <label for="email">Email Address</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-1">
                             <div class="col-md-6">
                                 <div class="form-floating mb-1">
                                     <select class="form-select form-select-sm @error('sex') is-invalid @enderror"
@@ -79,7 +90,17 @@
                                     <label for="sex">Gender</label>
                                 </div>
                             </div>
+
                             <div class="col-md-6">
+                                <div class="form-floating mb-1">
+                                    <input type="text"
+                                        class="form-control form-control-sm @error('contact_number') is-invalid @enderror"
+                                        id="contact_number" name="contact_number" value="{{ old('contact_number') }}"
+                                        placeholder="Mobile Number" required>
+                                    <label for="contact_number">Mobile Number</label>
+                                </div>
+                            </div>
+                            {{-- <div class="col-md-6">
                                 <div class="form-floating mb-1">
                                     <select class="form-select form-select-sm @error('role') is-invalid @enderror"
                                         id="role" name="role" required>
@@ -92,27 +113,7 @@
                                     </select>
                                     <label for="role">Role</label>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row g-1">
-                            <div class="col-md-6">
-                                <div class="form-floating mb-1">
-                                    <input type="email"
-                                        class="form-control form-control-sm @error('email') is-invalid @enderror"
-                                        id="email" name="email" value="{{ old('email') }}"
-                                        placeholder="Email Address" required>
-                                    <label for="email">Email Address</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating mb-1">
-                                    <input type="text"
-                                        class="form-control form-control-sm @error('contact_number') is-invalid @enderror"
-                                        id="contact_number" name="contact_number" value="{{ old('contact_number') }}"
-                                        placeholder="Mobile Number" required>
-                                    <label for="contact_number">Mobile Number</label>
-                                </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="row g-1">
                             <div class="col-md-6">
