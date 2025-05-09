@@ -38,7 +38,6 @@ class RegisteredUserController extends Controller
             'password' => 'required|string|confirmed|min:8',
             'mobile' => 'nullable|string|max:15',
             'sex' => 'required|in:Male,Female,Other',
-            'role' => 'required|in:user,admin',
         ]);
 
 
@@ -51,7 +50,6 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'mobile' => $request->contact_number,
             'sex' => $request->gender,
-            'role' => $request->role,
         ]);
 
         event(new Registered($user));
