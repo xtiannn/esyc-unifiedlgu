@@ -97,6 +97,11 @@
             max-height: 300px;
             overflow-y: auto;
         }
+
+        .card-img {
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
     </style>
 
     <h1 class="dashboard-title">📊 Welcome: {{ Str::title(Auth::user()->name) }}</h1>
@@ -152,6 +157,13 @@
                     </div>
                 </a>
             </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <img src="{{ asset('assets/images/banner.png') }}" alt="Banner Image" class="card-img"
+                style="width: 100%; height: auto;">
         </div>
     </div>
 

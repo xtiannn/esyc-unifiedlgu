@@ -39,7 +39,7 @@ Route::post('/logout', function () {
     Auth::logout(); // Log the user out
     request()->session()->invalidate(); // Invalidate the session
     request()->session()->regenerateToken(); // Regenerate the CSRF token
-    return redirect('/login'); // Redirect to the login page
+    return redirect('/welcome'); // Redirect to the login page
 })->name('logout');
 
 Route::middleware('guest')->group(function () {
@@ -48,8 +48,8 @@ Route::middleware('guest')->group(function () {
     })->name('login');
 });
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+    Route::get('/welcome', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/welcome', [AuthenticatedSessionController::class, 'store']);
 });
 
 // Root route: Redirect based on auth status
