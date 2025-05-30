@@ -29,7 +29,7 @@ Route::get('/setup', function () {
     return 'Setup Done';
 });
 
-// Override Breeze’s login route
+// Override Breeze’s login routes
 
 // Route::get('/login', [AuthenticatedSessionController::class, 'createOrAutoLogin'])->name('login');
 // Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('store');
