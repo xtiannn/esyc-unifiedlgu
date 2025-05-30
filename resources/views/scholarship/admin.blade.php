@@ -82,7 +82,7 @@
                     <th>Email</th>
                     <th class="text-center">Contact</th>
                     <th class="text-center">Status</th>
-                    <th>Application Date</th>
+                    <th>Date Applied</th>
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
